@@ -1,4 +1,5 @@
-"use strict";// ==UserScript==
+"use strict";
+// ==UserScript==
 // @name         b 站黑名单加强
 // @description  b 站黑名单加强
 // @version      0.0.1

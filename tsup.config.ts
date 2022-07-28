@@ -16,7 +16,7 @@ export default defineConfig(options => {
     format: 'iife',
     minify: !options.watch,
     banner: {
-      js: meta + windowVars,
+      js: `\n${meta}${windowVars}`,
     },
   }
 })
