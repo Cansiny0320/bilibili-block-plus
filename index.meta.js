@@ -8,8 +8,8 @@
 // @match        https://www.bilibili.com/*
 // @supportURL   https://github.com/Cansiny0320/bilibili-block-plus/issues
 // @installURL   https://github.com/Cansiny0320/bilibili-block-plus
-// @updateURL    https://github.com/Cansiny0320/bilibili-block-plus/dist/index.meta.js
-// @downloadURL  https://github.com/Cansiny0320/bilibili-block-plus/dist/index.user.js
+// @updateURL    https://github.com/Cansiny0320/bilibili-block-plus/raw/master/dist/index.meta.js
+// @downloadURL  https://github.com/Cansiny0320/bilibili-block-plus/raw/master/dist/index.user.js
 // @run-at       document-start
 // @license      MIT License
 // @grant        none
