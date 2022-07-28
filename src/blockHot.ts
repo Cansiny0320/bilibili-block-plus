@@ -1,7 +1,5 @@
 const obseverTabsChange = (onChange: () => void) => {
   const targetNode = document.querySelector('.nav-tabs') as Node
-  console.log(targetNode)
-
   const config = { attributes: true, childList: true, subtree: true }
   const callback: MutationCallback = function (mutationsList) {
     for (const mutation of mutationsList) {
