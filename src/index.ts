@@ -1,15 +1,18 @@
 import { blockHot } from './blockHot'
+import { blockVideoPage } from './blockVideoPage'
 
 const blockList = window.blockList
 
 const executerMap: Record<string, ((blockList: string[]) => void)[]> = {
   popular: [blockHot],
+  video: [blockVideoPage],
 }
-
 const main = () => {
   const path = window.location.pathname
+  console.log(path)
+
   Object.keys(executerMap).some(key => {
-    if (path.includes(path)) {
+    if (path.includes(key)) {
       const executers = executerMap[key]
       executers.forEach(execute => execute(blockList))
       return true
