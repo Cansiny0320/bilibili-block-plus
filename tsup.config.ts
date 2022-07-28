@@ -1,17 +1,8 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import { defineConfig } from 'tsup'
 
-const banner = `
-// ==UserScript==
-// @name         b 站黑名单加强
-// @namespace    http://tampermonkey.net/
-// @version      0.0.1
-// @description  try to take over the world!
-// @author       Cansiny0320
-// @match        https://www.bilibili.com/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=bilibili.com
-// @grant        none
-// ==/UserScript==
-`
+const meta = fs.readFileSync(path.resolve(__dirname, './index.meta.js'), 'utf-8')
 
 const windowVars = `
 window.blockList = [];
@@ -25,7 +16,7 @@ export default defineConfig(options => {
     format: 'iife',
     minify: !options.watch,
     banner: {
-      js: banner + windowVars,
+      js: meta + windowVars,
     },
   }
 })

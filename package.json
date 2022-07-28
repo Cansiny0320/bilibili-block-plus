@@ -36,7 +36,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && mv dist/index.global.js dist/index.user.js && cp index.meta.js dist/index.meta.js",
     "dev": "tsup --watch",
     "lint": "eslint .",
     "prepublishOnly": "nr build",
