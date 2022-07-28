@@ -40,7 +40,7 @@
     "dev": "tsup --watch",
     "lint": "eslint .",
     "prepublishOnly": "nr build",
-    "release": "bumpp",
+    "release": "nr build && bumpp",
     "start": "esno src/index.ts",
     "typecheck": "tsc --noEmit"
   },
