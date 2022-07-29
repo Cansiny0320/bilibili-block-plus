@@ -1,8 +1,8 @@
 {
   "name": "bilibili-block-plus",
   "type": "module",
-  "private": true,
   "version": "0.0.2",
+  "private": true,
   "packageManager": "pnpm@7.2.1",
   "description": "",
   "author": "Cansiny0320 <Cansiny1220@gmail.com>",
