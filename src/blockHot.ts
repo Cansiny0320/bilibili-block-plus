@@ -1,4 +1,4 @@
-import { obseverDomChange, requestAnimationFrameWrapper } from './utils'
+import { obseverDomChange, requestAnimationFrameWrapper, shouldBlock } from './utils'
 
 const block = (blockList: string[]) => {
   let success = false
@@ -11,7 +11,7 @@ const block = (blockList: string[]) => {
     success = true
   }
   upNameElements
-    .filter(el => el.textContent && blockList.includes(el.innerText))
+    .filter(el => el.textContent && shouldBlock(blockList, el.innerText))
     .map(el => el.parentElement?.parentElement?.parentElement?.parentElement)
     .forEach(el => el?.remove())
   return success

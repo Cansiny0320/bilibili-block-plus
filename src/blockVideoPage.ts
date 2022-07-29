@@ -1,4 +1,4 @@
-import { obseverDomChange, requestAnimationFrameWrapper } from './utils'
+import { obseverDomChange, requestAnimationFrameWrapper, shouldBlock } from './utils'
 
 const blockReply = (blockList: string[]) => {
   let success = false
@@ -19,7 +19,7 @@ const blockReply = (blockList: string[]) => {
   ) as HTMLDivElement[]
 
   subReplyItemsNameElemants.forEach(el => {
-    if (el.textContent && blockList.includes(el.textContent)) {
+    if (el.textContent && shouldBlock(blockList, el.textContent)) {
       el.parentElement?.parentElement?.remove()
     }
   })
@@ -34,7 +34,7 @@ const blockRecommend = (blockList: string[]) => {
   }
   cardBoxElements.forEach(el => {
     const name = el.querySelector('.name')?.textContent
-    if (name && blockList.includes(name)) {
+    if (name && shouldBlock(blockList, name)) {
       el.remove()
     }
   })

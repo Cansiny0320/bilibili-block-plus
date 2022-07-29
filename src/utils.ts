@@ -29,3 +29,10 @@ export const obseverDomChange = ({
     return success
   })
 }
+
+export const shouldBlock = (blockList: (string | RegExp)[], name: string) => {
+  return blockList.some(block => {
+    const isRegExp = block instanceof RegExp
+    return isRegExp ? block.test(name) : block === name
+  })
+}

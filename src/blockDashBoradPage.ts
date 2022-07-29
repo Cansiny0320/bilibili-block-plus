@@ -1,4 +1,4 @@
-import { obseverDomChange, requestAnimationFrameWrapper } from './utils'
+import { obseverDomChange, requestAnimationFrameWrapper, shouldBlock } from './utils'
 
 const blockRecommend = (blockList: string[]) => {
   let success = false
@@ -10,7 +10,7 @@ const blockRecommend = (blockList: string[]) => {
   }
   cardBoxElements.forEach(el => {
     const name = el.querySelector('.bili-video-card__info--author')?.textContent
-    if (name && blockList.includes(name)) {
+    if (name && shouldBlock(blockList, name)) {
       el.remove()
     }
   })
