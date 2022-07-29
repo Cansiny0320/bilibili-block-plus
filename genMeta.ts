@@ -1,13 +1,11 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import type { PackageJson } from 'pkg-types'
-import _pkg from './package.json'
+import { readPackageJSON } from 'pkg-types'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
-
-const pkg = _pkg as PackageJson
+const pkg = await readPackageJSON(path.resolve(dirname, './package.json'))
 
 export const meta = `// ==UserScript==
 // @name         b 站黑名单加强
