@@ -9,8 +9,6 @@ const executerMap: Record<string, ((blockList: string[]) => void)[]> = {
 }
 const main = () => {
   const path = window.location.pathname
-  console.log(path)
-
   Object.keys(executerMap).some(key => {
     if (path.includes(key)) {
       const executers = executerMap[key]

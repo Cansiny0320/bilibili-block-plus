@@ -16,8 +16,6 @@ export const obseverDomChange = ({
   requestAnimationFrameWrapper(() => {
     let success = false
     const target = document.querySelector(selector) as Node
-    console.log(target)
-
     if (!target) {
       return success
     }
