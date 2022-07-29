@@ -26,10 +26,30 @@ const blockReply = (blockList: string[]) => {
   return success
 }
 
+const blockRecommend = (blockList: string[]) => {
+  let success = false
+  const cardBoxElements = Array.from(document.querySelectorAll('.card-box')) as HTMLDivElement[]
+  if (cardBoxElements.length > 0) {
+    success = true
+  }
+  cardBoxElements.forEach(el => {
+    const name = el.querySelector('.name')?.textContent
+    if (name && blockList.includes(name)) {
+      el.remove()
+    }
+  })
+  return success
+}
+
 export const blockVideoPage = (blockList: string[]) => {
   requestAnimationFrameWrapper(() => blockReply(blockList))
   obseverDomChange({
     selector: '.reply-list',
     onChange: () => blockReply(blockList),
+  })
+  requestAnimationFrameWrapper(() => blockRecommend(blockList))
+  obseverDomChange({
+    selector: '.rec-list',
+    onChange: () => blockRecommend(blockList),
   })
 }
