@@ -4,11 +4,12 @@ b 站黑名单 plus 油猴脚本
 
 ## Feature
 
-- 屏蔽作品
-- 屏蔽评论
+- [x] 屏蔽作品
+- [x] 屏蔽评论
 
 已适配页面
 
+- [x] 首页
 - [x] 热门推荐/排行榜
 - [x] 视频播放
 
@@ -18,7 +19,7 @@ b 站黑名单 plus 油猴脚本
 
 然后点击 [下载](https://github.com/Cansiny0320/bilibili-block-plus/raw/master/dist/index.user.js) 脚本
 
-将你需要加入黑名单的用户 id, 写在脚本中的 blockList 中，如 ['user1','user2']，即可使用
+将你需要加入黑名单的用户 id(支持文本和正则), 写在脚本中的 blockList 中，如 ['user1','user2']，即可使用
 
 ## License
 
