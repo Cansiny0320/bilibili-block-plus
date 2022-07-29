@@ -22,7 +22,7 @@
     "dev": "tsup --watch",
     "lint": "eslint .",
     "prepublishOnly": "nr build",
-    "release": "nr build && git add dist && bumpp",
+    "release": "bumpp --no-push && nr build && git add dist",
     "start": "esno src/index.ts",
     "typecheck": "tsc --noEmit",
     "gen-meta": "esno genMeta.ts"
