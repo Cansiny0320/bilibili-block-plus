@@ -1,8 +1,5 @@
-import fs from 'node:fs'
-import path from 'node:path'
 import { defineConfig } from 'tsup'
-
-const meta = fs.readFileSync(path.resolve(__dirname, './index.meta.js'), 'utf-8')
+import { meta } from './genMeta'
 
 const windowVars = `
 window.blockList = [];

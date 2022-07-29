@@ -7,7 +7,6 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=bilibili.com
 // @match        https://www.bilibili.com/*
 // @supportURL   https://github.com/Cansiny0320/bilibili-block-plus/issues
-// @installURL   https://github.com/Cansiny0320/bilibili-block-plus
 // @updateURL    https://github.com/Cansiny0320/bilibili-block-plus/raw/master/dist/index.meta.js
 // @downloadURL  https://github.com/Cansiny0320/bilibili-block-plus/raw/master/dist/index.user.js
 // @run-at       document-start
