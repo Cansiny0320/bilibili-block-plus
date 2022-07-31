@@ -8,7 +8,7 @@ const pkg = await readPackageJSON(path.resolve(dirname, './package.json'))
 
 export const meta = `// ==UserScript==
 // @name         b 站黑名单加强
-// @description  b 站黑名单加强
+// @description  可屏蔽指定用户作品、评论等
 // @version      ${pkg.version}
 // @namespace    ${pkg.homepage}
 // @author       ${pkg.author}
