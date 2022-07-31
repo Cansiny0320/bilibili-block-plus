@@ -1,31 +1,37 @@
 {
   "name": "bilibili-block-plus",
-  "type": "module",
   "version": "0.3.0",
   "private": true,
-  "packageManager": "pnpm@7.2.1",
   "description": "",
-  "author": "Cansiny0320 <Cansiny1220@gmail.com>",
-  "license": "MIT",
+  "keywords": [],
   "homepage": "https://github.com/Cansiny0320/bilibili-block-plus",
+  "bugs": "https://github.com/Cansiny0320/bilibili-block-plus/issues",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Cansiny0320/bilibili-block-plus.git"
   },
-  "bugs": "https://github.com/Cansiny0320/bilibili-block-plus/issues",
-  "keywords": [],
+  "license": "MIT",
+  "author": "Cansiny0320 <Cansiny1220@gmail.com>",
+  "type": "module",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsup && mv dist/index.global.js dist/index.user.js && npm run gen-meta",
     "dev": "tsup --watch",
+    "gen-meta": "esno genMeta.ts",
     "lint": "eslint .",
     "prepublishOnly": "nr build",
     "release": "nr build && git add dist && git commit -m 'chore: update dist' && bumpp",
     "start": "esno src/index.ts",
-    "typecheck": "tsc --noEmit",
-    "gen-meta": "esno genMeta.ts"
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^4.7.0",
+    "antd": "^4.22.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "styled-components": "^5.3.5"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.25.2",
@@ -42,11 +48,5 @@
     "tsup": "^6.2.0",
     "typescript": "^4.7.4"
   },
-  "dependencies": {
-    "@ant-design/icons": "^4.7.0",
-    "antd": "^4.22.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "styled-components": "^5.3.5"
-  }
+  "packageManager": "pnpm@7.2.1"
 }
