@@ -1,6 +1,6 @@
 # bilibili-block-plus
 
-b 站黑名单 plus 油猴脚本
+b 站黑名单 plus 油猴脚本, 可屏蔽指定用户作品、评论等
 
 ## Feature
 
@@ -12,6 +12,8 @@ b 站黑名单 plus 油猴脚本
 - [x] 首页
 - [x] 热门推荐/排行榜
 - [x] 视频播放
+- [ ] 动态
+- [ ] 专栏页
 
 ## Useage
 
