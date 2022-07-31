@@ -12,7 +12,7 @@ const executerMap: Record<string, ((blockList: string[]) => void)[]> = {
 }
 
 const main = async () => {
-  const blockList = (await GM.getValue<string>(storageKey)).split('\n') || []
+  const blockList = ((await GM.getValue<string>(storageKey)) ?? '').split('\n')
   const path = window.location.pathname
   Object.keys(executerMap).some(key => {
     if (path.includes(key)) {
