@@ -1,5 +1,5 @@
 import { defineConfig } from 'tsup'
-import { meta } from './genMeta'
+import { meta } from './meta'
 
 const windowVars = `
 window.blockList = [];
@@ -11,7 +11,8 @@ export default defineConfig(options => {
     clean: true,
     target: 'es6',
     format: 'iife',
-    minify: !options.watch,
+    minify: true,
+    replaceNodeEnv: true,
     banner: {
       js: `\n${meta}${windowVars}`,
     },
