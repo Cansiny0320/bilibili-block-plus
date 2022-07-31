@@ -4,7 +4,8 @@
     "arrow-parens": 0,
     "@typescript-eslint/brace-style": 0,
     "curly": 0,
-    "quote-props": 0
+    "quote-props": 0,
+    "operator-linebreak": 0
     // "no-console": 0
   }
 }
