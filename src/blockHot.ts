@@ -23,4 +23,8 @@ export const blockHot = (blockList: string[]) => {
     selector: '.nav-tabs',
     onChange: () => block(blockList),
   })
+  obseverDomChange({
+    selector: '.popular-video-container',
+    onChange: () => block(blockList),
+  })
 }
