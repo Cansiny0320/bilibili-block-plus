@@ -11,7 +11,7 @@ export default defineConfig(options => {
     clean: true,
     target: 'es6',
     format: 'iife',
-    minify: true,
+    minify: !options.watch,
     replaceNodeEnv: true,
     banner: {
       js: `\n${meta}${windowVars}`,
