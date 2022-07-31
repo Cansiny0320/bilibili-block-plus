@@ -1,10 +1,6 @@
 import { defineConfig } from 'tsup'
 import { meta } from './meta'
 
-const windowVars = `
-window.blockList = [];
-`
-
 export default defineConfig(options => {
   return {
     entry: ['src/index.ts'],
@@ -14,7 +10,7 @@ export default defineConfig(options => {
     minify: !options.watch,
     replaceNodeEnv: true,
     banner: {
-      js: `\n${meta}${windowVars}`,
+      js: `\n${meta}`,
     },
   }
 })
