@@ -11,5 +11,6 @@
 // @downloadURL  https://github.com/Cansiny0320/bilibili-block-plus/raw/master/dist/index.user.js
 // @run-at       document-start
 // @license      MIT License
-// @grant        none
+// @grant        GM.getValue
+// @grant        GM.setValue
 // ==/UserScript==
