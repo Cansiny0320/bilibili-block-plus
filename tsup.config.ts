@@ -1,5 +1,5 @@
 import { defineConfig } from 'tsup'
-import { meta } from './meta'
+import { meta } from './config/meta'
 export default defineConfig(options => {
   return {
     entry: ['src/index.ts'],
