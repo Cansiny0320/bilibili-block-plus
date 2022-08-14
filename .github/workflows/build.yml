@@ -28,6 +28,6 @@ jobs:
         run: |
           git config --global user.email "1136843910@qq.com"
           git config --global user.name "Cansiny0320"
-          git add . && echo "Git Added"
+          git add dist && echo "Git Added"
           git commit -m 'chore: update dist' && echo "Git Committed"
           git push -u origin master && echo "Git Pushed Origin"
