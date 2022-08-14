@@ -1,6 +1,6 @@
 # bilibili-block-plus
 
-b 站黑名单 plus 油猴脚本, 可屏蔽指定用户作品、评论等
+b 站黑名单 plus 油猴脚本，可屏蔽指定用户作品、评论等
 
 ## Feature
 
@@ -22,6 +22,10 @@ b 站黑名单 plus 油猴脚本, 可屏蔽指定用户作品、评论等
 然后点击 [下载](https://greasyfork.org/zh-CN/scripts/448724-b-%E7%AB%99%E9%BB%91%E5%90%8D%E5%8D%95%E5%8A%A0%E5%BC%BA) 脚本
 
 将你需要加入黑名单的用户 id(支持文本和正则), 写在脚本中的 blockList 中，如 ['user1','user2']，即可使用
+
+## development
+
+修改后 npm run build 打包，npm run release 发布
 
 ## License
 

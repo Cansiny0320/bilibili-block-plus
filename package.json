@@ -22,8 +22,7 @@
     "dev": "tsup --watch",
     "lint": "eslint .",
     "prepublishOnly": "nr build",
-    "release": "nr build && git add dist && git commit -m 'chore: update dist'",
-    "bumpp": "bumpp",
+    "release": "bumpp && nr build && git add dist && git commit -m 'chore: update dist' && git push",
     "start": "esno src/index.ts",
     "typecheck": "tsc --noEmit",
     "gen-meta": "esno genMeta.ts"
