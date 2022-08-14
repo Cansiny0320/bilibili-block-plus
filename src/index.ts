@@ -1,4 +1,4 @@
-import React from 'react'
+import { createElement } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App, storageKey } from './views/App'
 import { blockDashBoradPage } from './blockDashBoradPage'
@@ -38,7 +38,7 @@ const main = async () => {
       document.body.append(container)
       document.body.append(style)
       const root = createRoot(container!)
-      root.render(React.createElement(App))
+      root.render(createElement(App))
       return true
     }
     return false
