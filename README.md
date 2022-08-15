@@ -21,7 +21,17 @@ b 站黑名单 plus 油猴脚本，可屏蔽指定用户作品、评论等
 
 然后点击 [下载](https://greasyfork.org/zh-CN/scripts/448724-b-%E7%AB%99%E9%BB%91%E5%90%8D%E5%8D%95%E5%8A%A0%E5%BC%BA) 脚本
 
-将你需要加入黑名单的用户 id(支持文本和正则), 写在脚本中的 blockList 中，如 ['user1','user2']，即可使用
+点一下这个图标
+
+![](https://cansiny.oss-cn-shanghai.aliyuncs.com/images/1660536198914.png)
+
+然后填写你要屏蔽的用户名/用户名正则 每行一个
+
+![](https://cansiny.oss-cn-shanghai.aliyuncs.com/images/1660536218553.png)
+
+最后再点一下图标保存（这步要做 不点图标不会保存）
+
+最后刷新页面就有效果了
 
 ## development
 
