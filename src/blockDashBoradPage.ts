@@ -20,7 +20,7 @@ const blockRecommend = (blockList: string[]) => {
 export const blockDashBoradPage = (blockList: string[]) => {
   requestAnimationFrameWrapper(() => blockRecommend(blockList))
   obseverDomChange({
-    selector: '.recommend-container__2-line',
+    selector: '.recommended-container_floor-aside .container',
     onChange: () => blockRecommend(blockList),
   })
 }

@@ -30,9 +30,10 @@ export const obseverDomChange = ({
   })
 }
 
-export const shouldBlock = (blockList: (string | RegExp)[], name: string) => {
+export const shouldBlock = (blockList: string[], name: string) => {
   return blockList.some(block => {
-    const isRegExp = block instanceof RegExp
-    return isRegExp ? block.test(name) : block === name
+    const isRegExp = block.length >= 2 && block.startsWith('/') && block.endsWith('/')
+    const _block = isRegExp ? new RegExp(block.slice(1, -1)) : block
+    return isRegExp ? (_block as RegExp).test(name) : _block === name
   })
 }
