@@ -1,18 +1,17 @@
-import styled from 'styled-components'
 import { useEffect, useState } from 'react'
 import { StopOutlined } from '@ant-design/icons'
-const Container = styled.div`
-  width: 32px;
-  position: relative;
-`
+// const Container = styled.div`
+//   width: 32px;
+//   position: relative;
+// `
 
-const Textarea = styled.textarea`
-  position: absolute;
-  left: 36px;
-  width: 200px;
-  height: 70px;
-  max-width: 200px;
-`
+// const Textarea = styled.textarea`
+//   position: absolute;
+//   left: 36px;
+//   width: 200px;
+//   height: 70px;
+//   max-width: 200px;
+// `
 
 const preFix = 'bilibili-block-plus'
 export const storageKey = `${preFix}-block-list`
@@ -30,7 +29,10 @@ export const App: React.FC = () => {
   }, [])
 
   return (
-    <Container>
+    <div style={{
+      width: 32,
+      position: 'relative',
+    }}>
       <StopOutlined
         style={{ fontSize: '32px', cursor: 'pointer' }}
         onClick={async () => {
@@ -41,7 +43,14 @@ export const App: React.FC = () => {
         }}
       />
       {showInput && (
-        <Textarea
+        <textarea
+        style={{
+          position: 'absolute',
+          left: 36,
+          width: 200,
+          height: 70,
+          maxWidth: 200,
+        }}
           value={value}
           onChange={e => {
             setValue(e.target.value)
@@ -49,6 +58,6 @@ export const App: React.FC = () => {
           placeholder="输入屏蔽规则，每行一个"
         />
       )}
-    </Container>
+    </div>
   )
 }

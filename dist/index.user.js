@@ -1,9 +1,8 @@
-"use strict";
 
 // ==UserScript==
 // @name         b 站黑名单加强
 // @description  可屏蔽指定用户作品、评论等
-// @version      0.3.7
+// @version      0.3.8
 // @namespace    https://github.com/Cansiny0320/bilibili-block-plus
 // @author       Cansiny0320 <Cansiny1220@gmail.com>
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=bilibili.com
@@ -17,6 +16,7 @@
 // @grant        GM.setValue
 // ==/UserScript==
 
+"use strict";
 (() => {
   var __create = Object.create;
   var __defProp = Object.defineProperty;
@@ -24,14 +24,7 @@
   var __getOwnPropNames = Object.getOwnPropertyNames;
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __require = /* @__PURE__ */ ((x2) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x2, {
-    get: (a2, b2) => (typeof require !== "undefined" ? require : a2)[b2]
-  }) : x2)(function(x2) {
-    if (typeof require !== "undefined")
-      return require.apply(this, arguments);
-    throw new Error('Dynamic require of "' + x2 + '" is not supported');
-  });
-  var __commonJS = (cb, mod) => function __require2() {
+  var __commonJS = (cb, mod) => function __require() {
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
   var __copyProps = (to, from, except, desc) => {
@@ -43,6 +36,10 @@
     return to;
   };
   var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
     isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
     mod
   ));
@@ -51,18 +48,18 @@
       var fulfilled = (value) => {
         try {
           step(generator.next(value));
-        } catch (e2) {
-          reject(e2);
+        } catch (e) {
+          reject(e);
         }
       };
       var rejected = (value) => {
         try {
           step(generator.throw(value));
-        } catch (e2) {
-          reject(e2);
+        } catch (e) {
+          reject(e);
         }
       };
-      var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+      var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
       step((generator = generator.apply(__this, __arguments)).next());
     });
   };
@@ -104,6 +101,10 @@
             return null;
           }
           var ReactCurrentDispatcher = {
+            /**
+             * @internal
+             * @type {ReactComponent}
+             */
             current: null
           };
           var ReactCurrentBatchConfig = {
@@ -111,10 +112,15 @@
           };
           var ReactCurrentActQueue = {
             current: null,
+            // Used to reproduce behavior of `batchedUpdates` in legacy mode.
             isBatchingLegacy: false,
             didScheduleLegacyUpdate: false
           };
           var ReactCurrentOwner = {
+            /**
+             * @internal
+             * @type {ReactComponent}
+             */
             current: null
           };
           var ReactDebugCurrentFrame = {};
@@ -206,15 +212,62 @@
             }
           }
           var ReactNoopUpdateQueue = {
+            /**
+             * Checks whether or not this composite component is mounted.
+             * @param {ReactClass} publicInstance The instance we want to test.
+             * @return {boolean} True if mounted, false otherwise.
+             * @protected
+             * @final
+             */
             isMounted: function(publicInstance) {
               return false;
             },
+            /**
+             * Forces an update. This should only be invoked when it is known with
+             * certainty that we are **not** in a DOM transaction.
+             *
+             * You may want to call this when you know that some deeper aspect of the
+             * component's state has changed but `setState` was not called.
+             *
+             * This will not invoke `shouldComponentUpdate`, but it will invoke
+             * `componentWillUpdate` and `componentDidUpdate`.
+             *
+             * @param {ReactClass} publicInstance The instance that should rerender.
+             * @param {?function} callback Called after component is updated.
+             * @param {?string} callerName name of the calling function in the public API.
+             * @internal
+             */
             enqueueForceUpdate: function(publicInstance, callback, callerName) {
               warnNoop(publicInstance, "forceUpdate");
             },
+            /**
+             * Replaces all of the state. Always use this or `setState` to mutate state.
+             * You should treat `this.state` as immutable.
+             *
+             * There is no guarantee that `this.state` will be immediately updated, so
+             * accessing `this.state` after calling this method may return the old value.
+             *
+             * @param {ReactClass} publicInstance The instance that should rerender.
+             * @param {object} completeState Next state.
+             * @param {?function} callback Called after component is updated.
+             * @param {?string} callerName name of the calling function in the public API.
+             * @internal
+             */
             enqueueReplaceState: function(publicInstance, completeState, callback, callerName) {
               warnNoop(publicInstance, "replaceState");
             },
+            /**
+             * Sets a subset of the state. This only exists because _pendingState is
+             * internal. This provides a merging strategy that is not available to deep
+             * properties which is confusing. TODO: Expose pendingState or don't use it
+             * during the merge.
+             *
+             * @param {ReactClass} publicInstance The instance that should rerender.
+             * @param {object} partialState Next partial state to be merged with state.
+             * @param {?function} callback Called after component is updated.
+             * @param {?string} Name of the calling function in the public API.
+             * @internal
+             */
             enqueueSetState: function(publicInstance, partialState, callback, callerName) {
               warnNoop(publicInstance, "setState");
             }
@@ -282,8 +335,8 @@
             return refObject;
           }
           var isArrayImpl = Array.isArray;
-          function isArray(a2) {
-            return isArrayImpl(a2);
+          function isArray(a) {
+            return isArrayImpl(a);
           }
           function typeName(value) {
             {
@@ -297,7 +350,7 @@
               try {
                 testStringCoercion(value);
                 return false;
-              } catch (e2) {
+              } catch (e) {
                 return true;
               }
             }
@@ -375,7 +428,7 @@
                   var init = lazyComponent._init;
                   try {
                     return getComponentNameFromType(init(payload));
-                  } catch (x2) {
+                  } catch (x) {
                     return null;
                   }
                 }
@@ -459,11 +512,14 @@
           }
           var ReactElement = function(type, key, ref, self, source, owner, props) {
             var element = {
+              // This tag allows us to uniquely identify this as a React Element
               $$typeof: REACT_ELEMENT_TYPE,
+              // Built-in properties that belong on the element
               type,
               key,
               ref,
               props,
+              // Record the component responsible for creating this element.
               _owner: owner
             };
             {
@@ -526,8 +582,8 @@
               props.children = children;
             } else if (childrenLength > 1) {
               var childArray = Array(childrenLength);
-              for (var i2 = 0; i2 < childrenLength; i2++) {
-                childArray[i2] = arguments[i2 + 2];
+              for (var i = 0; i < childrenLength; i++) {
+                childArray[i] = arguments[i + 2];
               }
               {
                 if (Object.freeze) {
@@ -602,8 +658,8 @@
               props.children = children;
             } else if (childrenLength > 1) {
               var childArray = Array(childrenLength);
-              for (var i2 = 0; i2 < childrenLength; i2++) {
-                childArray[i2] = arguments[i2 + 2];
+              for (var i = 0; i < childrenLength; i++) {
+                childArray[i] = arguments[i + 2];
               }
               props.children = childArray;
             }
@@ -670,8 +726,8 @@
                 if (childKey != null) {
                   escapedChildKey = escapeUserProvidedKey(childKey) + "/";
                 }
-                mapIntoArray(mappedChild, array, escapedChildKey, "", function(c2) {
-                  return c2;
+                mapIntoArray(mappedChild, array, escapedChildKey, "", function(c) {
+                  return c;
                 });
               } else if (mappedChild != null) {
                 if (isValidElement(mappedChild)) {
@@ -682,7 +738,14 @@
                   }
                   mappedChild = cloneAndReplaceKey(
                     mappedChild,
-                    escapedPrefix + (mappedChild.key && (!_child || _child.key !== mappedChild.key) ? escapeUserProvidedKey("" + mappedChild.key) + "/" : "") + childKey
+                    // Keep both the (mapped) and old keys if they differ, just as
+                    // traverseAllChildren used to do for objects as children
+                    escapedPrefix + // $FlowFixMe Flow incorrectly thinks React.Portal doesn't have a key
+                    (mappedChild.key && (!_child || _child.key !== mappedChild.key) ? (
+                      // $FlowFixMe Flow incorrectly thinks existing element's key can be a number
+                      // eslint-disable-next-line react-internal/safe-string-coercion
+                      escapeUserProvidedKey("" + mappedChild.key) + "/"
+                    ) : "") + childKey
                   );
                 }
                 array.push(mappedChild);
@@ -694,9 +757,9 @@
             var subtreeCount = 0;
             var nextNamePrefix = nameSoFar === "" ? SEPARATOR : nameSoFar + SUBSEPARATOR;
             if (isArray(children)) {
-              for (var i2 = 0; i2 < children.length; i2++) {
-                child = children[i2];
-                nextName = nextNamePrefix + getElementKey(child, i2);
+              for (var i = 0; i < children.length; i++) {
+                child = children[i];
+                nextName = nextNamePrefix + getElementKey(child, i);
                 subtreeCount += mapIntoArray(child, array, escapedPrefix, nextName, callback);
               }
             } else {
@@ -738,11 +801,11 @@
             return result;
           }
           function countChildren(children) {
-            var n2 = 0;
+            var n = 0;
             mapChildren(children, function() {
-              n2++;
+              n++;
             });
-            return n2;
+            return n;
           }
           function forEachChildren(children, forEachFunc, forEachContext) {
             mapChildren(children, function() {
@@ -763,11 +826,20 @@
           function createContext2(defaultValue) {
             var context = {
               $$typeof: REACT_CONTEXT_TYPE,
+              // As a workaround to support multiple concurrent renderers, we categorize
+              // some renderers as primary and others as secondary. We only expect
+              // there to be two concurrent renderers at most: React Native (primary) and
+              // Fabric (secondary); React DOM (primary) and React ART (secondary).
+              // Secondary renderers store their context values on separate fields.
               _currentValue: defaultValue,
               _currentValue2: defaultValue,
+              // Used to track how many concurrent renderers this context currently
+              // supports within in a single renderer. Such as parallel server rendering.
               _threadCount: 0,
+              // These are circular
               Provider: null,
               Consumer: null,
+              // Add these to use same hidden class in VM as ServerContext
               _defaultValue: null,
               _globalName: null
             };
@@ -895,6 +967,7 @@
           }
           function lazy(ctor) {
             var payload = {
+              // We use these fields to store the result.
               _status: Uninitialized,
               _result: ctor
             };
@@ -988,7 +1061,11 @@
               return true;
             }
             if (typeof type === "object" && type !== null) {
-              if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== void 0) {
+              if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || // This needs to include all possible module reference object
+              // types supported by any Flight configuration anywhere since
+              // we don't know which Flight build this will end up being used
+              // with.
+              type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== void 0) {
                 return true;
               }
             }
@@ -1189,8 +1266,8 @@
               if (prefix === void 0) {
                 try {
                   throw Error();
-                } catch (x2) {
-                  var match = x2.stack.trim().match(/\n( *(at )?)/);
+                } catch (x) {
+                  var match = x.stack.trim().match(/\n( *(at )?)/);
                   prefix = match && match[1] || "";
                 }
               }
@@ -1236,23 +1313,23 @@
                 if (typeof Reflect === "object" && Reflect.construct) {
                   try {
                     Reflect.construct(Fake, []);
-                  } catch (x2) {
-                    control = x2;
+                  } catch (x) {
+                    control = x;
                   }
                   Reflect.construct(fn, [], Fake);
                 } else {
                   try {
                     Fake.call();
-                  } catch (x2) {
-                    control = x2;
+                  } catch (x) {
+                    control = x;
                   }
                   fn.call(Fake.prototype);
                 }
               } else {
                 try {
                   throw Error();
-                } catch (x2) {
-                  control = x2;
+                } catch (x) {
+                  control = x;
                 }
                 fn();
               }
@@ -1260,19 +1337,19 @@
               if (sample && control && typeof sample.stack === "string") {
                 var sampleLines = sample.stack.split("\n");
                 var controlLines = control.stack.split("\n");
-                var s2 = sampleLines.length - 1;
-                var c2 = controlLines.length - 1;
-                while (s2 >= 1 && c2 >= 0 && sampleLines[s2] !== controlLines[c2]) {
-                  c2--;
+                var s = sampleLines.length - 1;
+                var c = controlLines.length - 1;
+                while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
+                  c--;
                 }
-                for (; s2 >= 1 && c2 >= 0; s2--, c2--) {
-                  if (sampleLines[s2] !== controlLines[c2]) {
-                    if (s2 !== 1 || c2 !== 1) {
+                for (; s >= 1 && c >= 0; s--, c--) {
+                  if (sampleLines[s] !== controlLines[c]) {
+                    if (s !== 1 || c !== 1) {
                       do {
-                        s2--;
-                        c2--;
-                        if (c2 < 0 || sampleLines[s2] !== controlLines[c2]) {
-                          var _frame = "\n" + sampleLines[s2].replace(" at new ", " at ");
+                        s--;
+                        c--;
+                        if (c < 0 || sampleLines[s] !== controlLines[c]) {
+                          var _frame = "\n" + sampleLines[s].replace(" at new ", " at ");
                           if (fn.displayName && _frame.includes("<anonymous>")) {
                             _frame = _frame.replace("<anonymous>", fn.displayName);
                           }
@@ -1283,7 +1360,7 @@
                           }
                           return _frame;
                         }
-                      } while (s2 >= 1 && c2 >= 0);
+                      } while (s >= 1 && c >= 0);
                     }
                     break;
                   }
@@ -1345,7 +1422,7 @@
                   var init = lazyComponent._init;
                   try {
                     return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
-                  } catch (x2) {
+                  } catch (x) {
                   }
                 }
               }
@@ -1470,8 +1547,8 @@
               return;
             }
             if (isArray(node)) {
-              for (var i2 = 0; i2 < node.length; i2++) {
-                var child = node[i2];
+              for (var i = 0; i < node.length; i++) {
+                var child = node[i];
                 if (isValidElement(child)) {
                   validateExplicitKey(child, parentType);
                 }
@@ -1504,7 +1581,9 @@
               var propTypes;
               if (typeof type === "function") {
                 propTypes = type.propTypes;
-              } else if (typeof type === "object" && (type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_MEMO_TYPE)) {
+              } else if (typeof type === "object" && (type.$$typeof === REACT_FORWARD_REF_TYPE || // Note: Memo only checks outer props here.
+              // Inner props are checked in the reconciler.
+              type.$$typeof === REACT_MEMO_TYPE)) {
                 propTypes = type.propTypes;
               } else {
                 return;
@@ -1525,8 +1604,8 @@
           function validateFragmentProps(fragment) {
             {
               var keys = Object.keys(fragment.props);
-              for (var i2 = 0; i2 < keys.length; i2++) {
-                var key = keys[i2];
+              for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
                 if (key !== "children" && key !== "key") {
                   setCurrentlyValidatingElement$1(fragment);
                   error("Invalid prop `%s` supplied to `React.Fragment`. React.Fragment can only have `key` and `children` props.", key);
@@ -1574,8 +1653,8 @@
               return element;
             }
             if (validType) {
-              for (var i2 = 2; i2 < arguments.length; i2++) {
-                validateChildKeys(arguments[i2], type);
+              for (var i = 2; i < arguments.length; i++) {
+                validateChildKeys(arguments[i], type);
               }
             }
             if (type === REACT_FRAGMENT_TYPE) {
@@ -1609,8 +1688,8 @@
           }
           function cloneElementWithValidation(element, props, children) {
             var newElement = cloneElement.apply(this, arguments);
-            for (var i2 = 2; i2 < arguments.length; i2++) {
-              validateChildKeys(arguments[i2], newElement.type);
+            for (var i = 2; i < arguments.length; i++) {
+              validateChildKeys(arguments[i], newElement.type);
             }
             validatePropTypes(newElement);
             return newElement;
@@ -1787,17 +1866,17 @@
             {
               if (!isFlushing) {
                 isFlushing = true;
-                var i2 = 0;
+                var i = 0;
                 try {
-                  for (; i2 < queue.length; i2++) {
-                    var callback = queue[i2];
+                  for (; i < queue.length; i++) {
+                    var callback = queue[i];
                     do {
                       callback = callback(true);
                     } while (callback !== null);
                   }
                   queue.length = 0;
                 } catch (error2) {
-                  queue = queue.slice(i2 + 1);
+                  queue = queue.slice(i + 1);
                   throw error2;
                 } finally {
                   isFlushing = false;
@@ -1903,8 +1982,8 @@
             }
             return first;
           }
-          function siftUp(heap, node, i2) {
-            var index = i2;
+          function siftUp(heap, node, i) {
+            var index = i;
             while (index > 0) {
               var parentIndex = index - 1 >>> 1;
               var parent = heap[parentIndex];
@@ -1917,8 +1996,8 @@
               }
             }
           }
-          function siftDown(heap, node, i2) {
-            var index = i2;
+          function siftDown(heap, node, i) {
+            var index = i;
             var length = heap.length;
             var halfLength = length >>> 1;
             while (index < halfLength) {
@@ -1945,9 +2024,9 @@
               }
             }
           }
-          function compare(a2, b2) {
-            var diff = a2.sortIndex - b2.sortIndex;
-            return diff !== 0 ? diff : a2.id - b2.id;
+          function compare(a, b) {
+            var diff = a.sortIndex - b.sortIndex;
+            return diff !== 0 ? diff : a.id - b.id;
           }
           var ImmediatePriority = 1;
           var UserBlockingPriority = 2;
@@ -2443,8 +2522,8 @@
                 possibleRegistrationNames.ondblclick = registrationName;
               }
             }
-            for (var i2 = 0; i2 < dependencies.length; i2++) {
-              allNativeEvents.add(dependencies[i2]);
+            for (var i = 0; i < dependencies.length; i++) {
+              allNativeEvents.add(dependencies[i]);
             }
           }
           var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined");
@@ -2461,7 +2540,7 @@
               try {
                 testStringCoercion(value);
                 return false;
-              } catch (e2) {
+              } catch (e) {
                 return true;
               }
             }
@@ -2622,6 +2701,9 @@
           var reservedProps = [
             "children",
             "dangerouslySetInnerHTML",
+            // TODO: This prevents the assignment of defaultValue to regular
+            // elements (not just inputs). Now that ReactDOMInput assigns to the
+            // defaultValue property -- do we need this?
             "defaultValue",
             "defaultChecked",
             "innerHTML",
@@ -2634,9 +2716,13 @@
               name,
               RESERVED,
               false,
+              // mustUseProperty
               name,
+              // attributeName
               null,
+              // attributeNamespace
               false,
+              // sanitizeURL
               false
             );
           });
@@ -2646,9 +2732,13 @@
               name,
               STRING,
               false,
+              // mustUseProperty
               attributeName,
+              // attributeName
               null,
+              // attributeNamespace
               false,
+              // sanitizeURL
               false
             );
           });
@@ -2657,9 +2747,13 @@
               name,
               BOOLEANISH_STRING,
               false,
+              // mustUseProperty
               name.toLowerCase(),
+              // attributeName
               null,
+              // attributeNamespace
               false,
+              // sanitizeURL
               false
             );
           });
@@ -2668,15 +2762,21 @@
               name,
               BOOLEANISH_STRING,
               false,
+              // mustUseProperty
               name,
+              // attributeName
               null,
+              // attributeNamespace
               false,
+              // sanitizeURL
               false
             );
           });
           [
             "allowFullScreen",
             "async",
+            // Note: there is a special case that prevents it from being written to the DOM
+            // on the client side because the browsers are inconsistent. Instead we call focus().
             "autoFocus",
             "autoPlay",
             "controls",
@@ -2697,45 +2797,66 @@
             "reversed",
             "scoped",
             "seamless",
+            // Microdata
             "itemScope"
           ].forEach(function(name) {
             properties[name] = new PropertyInfoRecord(
               name,
               BOOLEAN,
               false,
+              // mustUseProperty
               name.toLowerCase(),
+              // attributeName
               null,
+              // attributeNamespace
               false,
+              // sanitizeURL
               false
             );
           });
           [
             "checked",
+            // Note: `option.selected` is not updated if `select.multiple` is
+            // disabled with `removeAttribute`. We have special logic for handling this.
             "multiple",
             "muted",
             "selected"
+            // NOTE: if you add a camelCased prop to this list,
+            // you'll need to set attributeName to name.toLowerCase()
+            // instead in the assignment below.
           ].forEach(function(name) {
             properties[name] = new PropertyInfoRecord(
               name,
               BOOLEAN,
               true,
+              // mustUseProperty
               name,
+              // attributeName
               null,
+              // attributeNamespace
               false,
+              // sanitizeURL
               false
             );
           });
           [
             "capture",
             "download"
+            // NOTE: if you add a camelCased prop to this list,
+            // you'll need to set attributeName to name.toLowerCase()
+            // instead in the assignment below.
           ].forEach(function(name) {
             properties[name] = new PropertyInfoRecord(
               name,
               OVERLOADED_BOOLEAN,
               false,
+              // mustUseProperty
               name,
+              // attributeName
               null,
+              // attributeNamespace
               false,
+              // sanitizeURL
               false
             );
           });
@@ -2744,14 +2865,21 @@
             "rows",
             "size",
             "span"
+            // NOTE: if you add a camelCased prop to this list,
+            // you'll need to set attributeName to name.toLowerCase()
+            // instead in the assignment below.
           ].forEach(function(name) {
             properties[name] = new PropertyInfoRecord(
               name,
               POSITIVE_NUMERIC,
               false,
+              // mustUseProperty
               name,
+              // attributeName
               null,
+              // attributeNamespace
               false,
+              // sanitizeURL
               false
             );
           });
@@ -2760,9 +2888,13 @@
               name,
               NUMERIC,
               false,
+              // mustUseProperty
               name.toLowerCase(),
+              // attributeName
               null,
+              // attributeNamespace
               false,
+              // sanitizeURL
               false
             );
           });
@@ -2844,15 +2976,21 @@
             "writing-mode",
             "xmlns:xlink",
             "x-height"
+            // NOTE: if you add a camelCased prop to this list,
+            // you'll need to set attributeName to name.toLowerCase()
+            // instead in the assignment below.
           ].forEach(function(attributeName) {
             var name = attributeName.replace(CAMELIZE, capitalize);
             properties[name] = new PropertyInfoRecord(
               name,
               STRING,
               false,
+              // mustUseProperty
               attributeName,
               null,
+              // attributeNamespace
               false,
+              // sanitizeURL
               false
             );
           });
@@ -2863,15 +3001,20 @@
             "xlink:show",
             "xlink:title",
             "xlink:type"
+            // NOTE: if you add a camelCased prop to this list,
+            // you'll need to set attributeName to name.toLowerCase()
+            // instead in the assignment below.
           ].forEach(function(attributeName) {
             var name = attributeName.replace(CAMELIZE, capitalize);
             properties[name] = new PropertyInfoRecord(
               name,
               STRING,
               false,
+              // mustUseProperty
               attributeName,
               "http://www.w3.org/1999/xlink",
               false,
+              // sanitizeURL
               false
             );
           });
@@ -2879,15 +3022,20 @@
             "xml:base",
             "xml:lang",
             "xml:space"
+            // NOTE: if you add a camelCased prop to this list,
+            // you'll need to set attributeName to name.toLowerCase()
+            // instead in the assignment below.
           ].forEach(function(attributeName) {
             var name = attributeName.replace(CAMELIZE, capitalize);
             properties[name] = new PropertyInfoRecord(
               name,
               STRING,
               false,
+              // mustUseProperty
               attributeName,
               "http://www.w3.org/XML/1998/namespace",
               false,
+              // sanitizeURL
               false
             );
           });
@@ -2896,9 +3044,13 @@
               attributeName,
               STRING,
               false,
+              // mustUseProperty
               attributeName.toLowerCase(),
+              // attributeName
               null,
+              // attributeNamespace
               false,
+              // sanitizeURL
               false
             );
           });
@@ -2907,9 +3059,11 @@
             "xlinkHref",
             STRING,
             false,
+            // mustUseProperty
             "xlink:href",
             "http://www.w3.org/1999/xlink",
             true,
+            // sanitizeURL
             false
           );
           ["src", "href", "action", "formAction"].forEach(function(attributeName) {
@@ -2917,9 +3071,13 @@
               attributeName,
               STRING,
               false,
+              // mustUseProperty
               attributeName.toLowerCase(),
+              // attributeName
               null,
+              // attributeNamespace
               true,
+              // sanitizeURL
               true
             );
           });
@@ -3173,8 +3331,8 @@
               if (prefix === void 0) {
                 try {
                   throw Error();
-                } catch (x2) {
-                  var match = x2.stack.trim().match(/\n( *(at )?)/);
+                } catch (x) {
+                  var match = x.stack.trim().match(/\n( *(at )?)/);
                   prefix = match && match[1] || "";
                 }
               }
@@ -3220,23 +3378,23 @@
                 if (typeof Reflect === "object" && Reflect.construct) {
                   try {
                     Reflect.construct(Fake, []);
-                  } catch (x2) {
-                    control = x2;
+                  } catch (x) {
+                    control = x;
                   }
                   Reflect.construct(fn, [], Fake);
                 } else {
                   try {
                     Fake.call();
-                  } catch (x2) {
-                    control = x2;
+                  } catch (x) {
+                    control = x;
                   }
                   fn.call(Fake.prototype);
                 }
               } else {
                 try {
                   throw Error();
-                } catch (x2) {
-                  control = x2;
+                } catch (x) {
+                  control = x;
                 }
                 fn();
               }
@@ -3244,19 +3402,19 @@
               if (sample && control && typeof sample.stack === "string") {
                 var sampleLines = sample.stack.split("\n");
                 var controlLines = control.stack.split("\n");
-                var s2 = sampleLines.length - 1;
-                var c2 = controlLines.length - 1;
-                while (s2 >= 1 && c2 >= 0 && sampleLines[s2] !== controlLines[c2]) {
-                  c2--;
+                var s = sampleLines.length - 1;
+                var c = controlLines.length - 1;
+                while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
+                  c--;
                 }
-                for (; s2 >= 1 && c2 >= 0; s2--, c2--) {
-                  if (sampleLines[s2] !== controlLines[c2]) {
-                    if (s2 !== 1 || c2 !== 1) {
+                for (; s >= 1 && c >= 0; s--, c--) {
+                  if (sampleLines[s] !== controlLines[c]) {
+                    if (s !== 1 || c !== 1) {
                       do {
-                        s2--;
-                        c2--;
-                        if (c2 < 0 || sampleLines[s2] !== controlLines[c2]) {
-                          var _frame = "\n" + sampleLines[s2].replace(" at new ", " at ");
+                        s--;
+                        c--;
+                        if (c < 0 || sampleLines[s] !== controlLines[c]) {
+                          var _frame = "\n" + sampleLines[s].replace(" at new ", " at ");
                           if (fn.displayName && _frame.includes("<anonymous>")) {
                             _frame = _frame.replace("<anonymous>", fn.displayName);
                           }
@@ -3267,7 +3425,7 @@
                           }
                           return _frame;
                         }
-                      } while (s2 >= 1 && c2 >= 0);
+                      } while (s >= 1 && c >= 0);
                     }
                     break;
                   }
@@ -3334,7 +3492,7 @@
                   var init = lazyComponent._init;
                   try {
                     return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
-                  } catch (x2) {
+                  } catch (x) {
                   }
                 }
               }
@@ -3374,8 +3532,8 @@
                 node = node.return;
               } while (node);
               return info;
-            } catch (x2) {
-              return "\nError generating stack: " + x2.message + "\n" + x2.stack;
+            } catch (x) {
+              return "\nError generating stack: " + x.message + "\n" + x.stack;
             }
           }
           function getWrappedName(outerType, innerType, wrapperName) {
@@ -3440,7 +3598,7 @@
                   var init = lazyComponent._init;
                   try {
                     return getComponentNameFromType(init(payload));
-                  } catch (x2) {
+                  } catch (x) {
                     return null;
                   }
                 }
@@ -3696,7 +3854,7 @@
             }
             try {
               return doc.activeElement || doc.body;
-            } catch (e2) {
+            } catch (e) {
               return doc.body;
             }
           }
@@ -3764,7 +3922,9 @@
             var type = props.type;
             if (value != null) {
               if (type === "number") {
-                if (value === 0 && node.value === "" || node.value != value) {
+                if (value === 0 && node.value === "" || // We explicitly want to coerce to number here if possible.
+                // eslint-disable-next-line
+                node.value != value) {
                   node.value = toString(value);
                 }
               } else if (node.value !== toString(value)) {
@@ -3835,8 +3995,8 @@
                 checkAttributeStringCoercion(name, "name");
               }
               var group = queryRoot.querySelectorAll("input[name=" + JSON.stringify("" + name) + '][type="radio"]');
-              for (var i2 = 0; i2 < group.length; i2++) {
-                var otherNode = group[i2];
+              for (var i = 0; i < group.length; i++) {
+                var otherNode = group[i];
                 if (otherNode === rootNode || otherNode.form !== rootNode.form) {
                   continue;
                 }
@@ -3850,7 +4010,10 @@
             }
           }
           function setDefaultValue(node, type, value) {
-            if (type !== "number" || getActiveElement(node.ownerDocument) !== node) {
+            if (
+              // Focused number inputs synchronize on blur. See ChangeEventPlugin.js
+              type !== "number" || getActiveElement(node.ownerDocument) !== node
+            ) {
               if (value == null) {
                 node.defaultValue = toString(node._wrapperState.initialValue);
               } else if (node.defaultValue !== toString(value)) {
@@ -3896,8 +4059,8 @@
             }
           }
           var isArrayImpl = Array.isArray;
-          function isArray(a2) {
-            return isArrayImpl(a2);
+          function isArray(a) {
+            return isArrayImpl(a);
           }
           var didWarnValueDefaultValue$1;
           {
@@ -3914,8 +4077,8 @@
           function checkSelectPropTypes(props) {
             {
               checkControlledValueProps("select", props);
-              for (var i2 = 0; i2 < valuePropNames.length; i2++) {
-                var propName = valuePropNames[i2];
+              for (var i = 0; i < valuePropNames.length; i++) {
+                var propName = valuePropNames[i];
                 if (props[propName] == null) {
                   continue;
                 }
@@ -3933,8 +4096,8 @@
             if (multiple) {
               var selectedValues = propValue;
               var selectedValue = {};
-              for (var i2 = 0; i2 < selectedValues.length; i2++) {
-                selectedValue["$" + selectedValues[i2]] = true;
+              for (var i = 0; i < selectedValues.length; i++) {
+                selectedValue["$" + selectedValues[i]] = true;
               }
               for (var _i = 0; _i < options2.length; _i++) {
                 var selected = selectedValue.hasOwnProperty("$" + options2[_i].value);
@@ -4248,6 +4411,7 @@
             widows: true,
             zIndex: true,
             zoom: true,
+            // SVG-related properties
             fillOpacity: true,
             floodOpacity: true,
             stopOpacity: true,
@@ -4296,7 +4460,7 @@
             var warnedForNaNValue = false;
             var warnedForInfinityValue = false;
             var camelize = function(string) {
-              return string.replace(hyphenPattern, function(_2, character) {
+              return string.replace(hyphenPattern, function(_, character) {
                 return character.toUpperCase();
               });
             };
@@ -4308,6 +4472,9 @@
               error(
                 "Unsupported style property %s. Did you mean %s?",
                 name,
+                // As Andi Smith suggests
+                // (http://www.andismith.com/blog/2012/02/modernizr-prefixed/), an `-ms` prefix
+                // is converted to lowercase `ms`.
                 camelize(name.replace(msPattern$1, "ms-"))
               );
             };
@@ -4406,8 +4573,8 @@
             var expanded = {};
             for (var key in styles) {
               var longhands = shorthandToLonghand[key] || [key];
-              for (var i2 = 0; i2 < longhands.length; i2++) {
-                expanded[longhands[i2]] = key;
+              for (var i = 0; i < longhands.length; i++) {
+                expanded[longhands[i]] = key;
               }
             }
             return expanded;
@@ -4450,6 +4617,7 @@
             source: true,
             track: true,
             wbr: true
+            // NOTE: menuitem's close tag should be omitted, but that causes problems.
           };
           var voidElementTags = assign({
             menuitem: true
@@ -4500,6 +4668,7 @@
             }
           }
           var possibleStandardNames = {
+            // HTML
             accept: "accept",
             acceptcharset: "acceptCharset",
             "accept-charset": "acceptCharset",
@@ -4649,6 +4818,7 @@
             width: "width",
             wmode: "wmode",
             wrap: "wrap",
+            // SVG
             about: "about",
             accentheight: "accentHeight",
             "accent-height": "accentHeight",
@@ -4988,14 +5158,19 @@
           };
           var ariaProperties = {
             "aria-current": 0,
+            // state
             "aria-description": 0,
             "aria-details": 0,
             "aria-disabled": 0,
+            // state
             "aria-hidden": 0,
+            // state
             "aria-invalid": 0,
+            // state
             "aria-keyshortcuts": 0,
             "aria-label": 0,
             "aria-roledescription": 0,
+            // Widget Attributes
             "aria-autocomplete": 0,
             "aria-checked": 0,
             "aria-expanded": 0,
@@ -5015,12 +5190,15 @@
             "aria-valuemin": 0,
             "aria-valuenow": 0,
             "aria-valuetext": 0,
+            // Live Region Attributes
             "aria-atomic": 0,
             "aria-busy": 0,
             "aria-live": 0,
             "aria-relevant": 0,
+            // Drag-and-Drop Attributes
             "aria-dropeffect": 0,
             "aria-grabbed": 0,
+            // Relationship Attributes
             "aria-activedescendant": 0,
             "aria-colcount": 0,
             "aria-colindex": 0,
@@ -5318,8 +5496,8 @@
             restoreQueue = null;
             restoreStateOfTarget(target);
             if (queuedTargets) {
-              for (var i2 = 0; i2 < queuedTargets.length; i2++) {
-                restoreStateOfTarget(queuedTargets[i2]);
+              for (var i = 0; i < queuedTargets.length; i++) {
+                restoreStateOfTarget(queuedTargets[i]);
               }
             }
           }
@@ -5336,13 +5514,13 @@
               restoreStateIfNeeded();
             }
           }
-          function batchedUpdates(fn, a2, b2) {
+          function batchedUpdates(fn, a, b) {
             if (isInsideEventHandler) {
-              return fn(a2, b2);
+              return fn(a, b);
             }
             isInsideEventHandler = true;
             try {
-              return batchedUpdatesImpl(fn, a2, b2);
+              return batchedUpdatesImpl(fn, a, b);
             } finally {
               isInsideEventHandler = false;
               finishEventHandler();
@@ -5402,11 +5580,11 @@
               });
               window.addEventListener("test", options, options);
               window.removeEventListener("test", options, options);
-            } catch (e2) {
+            } catch (e) {
               passiveBrowserEventsSupported = false;
             }
           }
-          function invokeGuardedCallbackProd(name, func, context, a2, b2, c2, d2, e2, f) {
+          function invokeGuardedCallbackProd(name, func, context, a, b, c, d, e, f) {
             var funcArgs = Array.prototype.slice.call(arguments, 3);
             try {
               func.apply(context, funcArgs);
@@ -5418,7 +5596,7 @@
           {
             if (typeof window !== "undefined" && typeof window.dispatchEvent === "function" && typeof document !== "undefined" && typeof document.createEvent === "function") {
               var fakeNode = document.createElement("react");
-              invokeGuardedCallbackImpl = function invokeGuardedCallbackDev(name, func, context, a2, b2, c2, d2, e2, f) {
+              invokeGuardedCallbackImpl = function invokeGuardedCallbackDev(name, func, context, a, b, c, d, e, f) {
                 if (typeof document === "undefined" || document === null) {
                   throw new Error("The `document` global was defined when React was initialized, but is not defined anymore. This can happen in a test environment if a component schedules an update from an asynchronous callback, but the test has already finished running. To solve this, you can either unmount the component at the end of your test (and ensure that any asynchronous operations get canceled in `componentWillUnmount`), or you can change the test itself to be asynchronous.");
                 }
@@ -5493,12 +5671,12 @@
               caughtError = error2;
             }
           };
-          function invokeGuardedCallback(name, func, context, a2, b2, c2, d2, e2, f) {
+          function invokeGuardedCallback(name, func, context, a, b, c, d, e, f) {
             hasError = false;
             caughtError = null;
             invokeGuardedCallbackImpl$1.apply(reporter, arguments);
           }
-          function invokeGuardedCallbackAndCatchFirstError(name, func, context, a2, b2, c2, d2, e2, f) {
+          function invokeGuardedCallbackAndCatchFirstError(name, func, context, a, b, c, d, e, f) {
             invokeGuardedCallback.apply(this, arguments);
             if (hasError) {
               var error2 = clearCaughtError();
@@ -5538,33 +5716,112 @@
           function set(key, value) {
             key._reactInternals = value;
           }
-          var NoFlags = 0;
-          var PerformedWork = 1;
-          var Placement = 2;
-          var Update = 4;
-          var ChildDeletion = 16;
-          var ContentReset = 32;
-          var Callback = 64;
-          var DidCapture = 128;
-          var ForceClientRender = 256;
-          var Ref = 512;
-          var Snapshot = 1024;
-          var Passive = 2048;
-          var Hydrating = 4096;
-          var Visibility = 8192;
-          var StoreConsistency = 16384;
+          var NoFlags = (
+            /*                      */
+            0
+          );
+          var PerformedWork = (
+            /*                */
+            1
+          );
+          var Placement = (
+            /*                    */
+            2
+          );
+          var Update = (
+            /*                       */
+            4
+          );
+          var ChildDeletion = (
+            /*                */
+            16
+          );
+          var ContentReset = (
+            /*                 */
+            32
+          );
+          var Callback = (
+            /*                     */
+            64
+          );
+          var DidCapture = (
+            /*                   */
+            128
+          );
+          var ForceClientRender = (
+            /*            */
+            256
+          );
+          var Ref = (
+            /*                          */
+            512
+          );
+          var Snapshot = (
+            /*                     */
+            1024
+          );
+          var Passive = (
+            /*                      */
+            2048
+          );
+          var Hydrating = (
+            /*                    */
+            4096
+          );
+          var Visibility = (
+            /*                   */
+            8192
+          );
+          var StoreConsistency = (
+            /*             */
+            16384
+          );
           var LifecycleEffectMask = Passive | Update | Callback | Ref | Snapshot | StoreConsistency;
-          var HostEffectMask = 32767;
-          var Incomplete = 32768;
-          var ShouldCapture = 65536;
-          var ForceUpdateForLegacySuspense = 131072;
-          var Forked = 1048576;
-          var RefStatic = 2097152;
-          var LayoutStatic = 4194304;
-          var PassiveStatic = 8388608;
-          var MountLayoutDev = 16777216;
-          var MountPassiveDev = 33554432;
-          var BeforeMutationMask = Update | Snapshot | 0;
+          var HostEffectMask = (
+            /*               */
+            32767
+          );
+          var Incomplete = (
+            /*                   */
+            32768
+          );
+          var ShouldCapture = (
+            /*                */
+            65536
+          );
+          var ForceUpdateForLegacySuspense = (
+            /* */
+            131072
+          );
+          var Forked = (
+            /*                       */
+            1048576
+          );
+          var RefStatic = (
+            /*                    */
+            2097152
+          );
+          var LayoutStatic = (
+            /*                 */
+            4194304
+          );
+          var PassiveStatic = (
+            /*                */
+            8388608
+          );
+          var MountLayoutDev = (
+            /*               */
+            16777216
+          );
+          var MountPassiveDev = (
+            /*              */
+            33554432
+          );
+          var BeforeMutationMask = (
+            // TODO: Remove Update flag from before mutation phase by re-landing Visibility
+            // flag logic (see #20043)
+            Update | Snapshot | 0
+          );
           var MutationMask = Placement | Update | ChildDeletion | ContentReset | Ref | Hydrating | Visibility;
           var LayoutMask = Update | Callback | Ref | Visibility;
           var PassiveMask = Passive | ChildDeletion;
@@ -5648,10 +5905,10 @@
               }
               return fiber;
             }
-            var a2 = fiber;
-            var b2 = alternate;
+            var a = fiber;
+            var b = alternate;
             while (true) {
-              var parentA = a2.return;
+              var parentA = a.return;
               if (parentA === null) {
                 break;
               }
@@ -5659,7 +5916,7 @@
               if (parentB === null) {
                 var nextParent = parentA.return;
                 if (nextParent !== null) {
-                  a2 = b2 = nextParent;
+                  a = b = nextParent;
                   continue;
                 }
                 break;
@@ -5667,11 +5924,11 @@
               if (parentA.child === parentB.child) {
                 var child = parentA.child;
                 while (child) {
-                  if (child === a2) {
+                  if (child === a) {
                     assertIsMounted(parentA);
                     return fiber;
                   }
-                  if (child === b2) {
+                  if (child === b) {
                     assertIsMounted(parentA);
                     return alternate;
                   }
@@ -5679,23 +5936,23 @@
                 }
                 throw new Error("Unable to find node on an unmounted component.");
               }
-              if (a2.return !== b2.return) {
-                a2 = parentA;
-                b2 = parentB;
+              if (a.return !== b.return) {
+                a = parentA;
+                b = parentB;
               } else {
                 var didFindChild = false;
                 var _child = parentA.child;
                 while (_child) {
-                  if (_child === a2) {
+                  if (_child === a) {
                     didFindChild = true;
-                    a2 = parentA;
-                    b2 = parentB;
+                    a = parentA;
+                    b = parentB;
                     break;
                   }
-                  if (_child === b2) {
+                  if (_child === b) {
                     didFindChild = true;
-                    b2 = parentA;
-                    a2 = parentB;
+                    b = parentA;
+                    a = parentB;
                     break;
                   }
                   _child = _child.sibling;
@@ -5703,16 +5960,16 @@
                 if (!didFindChild) {
                   _child = parentB.child;
                   while (_child) {
-                    if (_child === a2) {
+                    if (_child === a) {
                       didFindChild = true;
-                      a2 = parentB;
-                      b2 = parentA;
+                      a = parentB;
+                      b = parentA;
                       break;
                     }
-                    if (_child === b2) {
+                    if (_child === b) {
                       didFindChild = true;
-                      b2 = parentB;
-                      a2 = parentA;
+                      b = parentB;
+                      a = parentA;
                       break;
                     }
                     _child = _child.sibling;
@@ -5722,14 +5979,14 @@
                   }
                 }
               }
-              if (a2.alternate !== b2) {
+              if (a.alternate !== b) {
                 throw new Error("Return fibers should always be each others' alternates. This error is likely caused by a bug in React. Please file an issue.");
               }
             }
-            if (a2.tag !== HostRoot) {
+            if (a.tag !== HostRoot) {
               throw new Error("Unable to find node on an unmounted component.");
             }
-            if (a2.stateNode.current === a2) {
+            if (a.stateNode.current === a) {
               return fiber;
             }
             return alternate;
@@ -6106,59 +6363,182 @@
               }
             }
           }
-          var NoMode = 0;
-          var ConcurrentMode = 1;
-          var ProfileMode = 2;
-          var StrictLegacyMode = 8;
-          var StrictEffectsMode = 16;
+          var NoMode = (
+            /*                         */
+            0
+          );
+          var ConcurrentMode = (
+            /*                 */
+            1
+          );
+          var ProfileMode = (
+            /*                    */
+            2
+          );
+          var StrictLegacyMode = (
+            /*               */
+            8
+          );
+          var StrictEffectsMode = (
+            /*              */
+            16
+          );
           var clz32 = Math.clz32 ? Math.clz32 : clz32Fallback;
           var log = Math.log;
           var LN2 = Math.LN2;
-          function clz32Fallback(x2) {
-            var asUint = x2 >>> 0;
+          function clz32Fallback(x) {
+            var asUint = x >>> 0;
             if (asUint === 0) {
               return 32;
             }
             return 31 - (log(asUint) / LN2 | 0) | 0;
           }
           var TotalLanes = 31;
-          var NoLanes = 0;
-          var NoLane = 0;
-          var SyncLane = 1;
-          var InputContinuousHydrationLane = 2;
-          var InputContinuousLane = 4;
-          var DefaultHydrationLane = 8;
-          var DefaultLane = 16;
-          var TransitionHydrationLane = 32;
-          var TransitionLanes = 4194240;
-          var TransitionLane1 = 64;
-          var TransitionLane2 = 128;
-          var TransitionLane3 = 256;
-          var TransitionLane4 = 512;
-          var TransitionLane5 = 1024;
-          var TransitionLane6 = 2048;
-          var TransitionLane7 = 4096;
-          var TransitionLane8 = 8192;
-          var TransitionLane9 = 16384;
-          var TransitionLane10 = 32768;
-          var TransitionLane11 = 65536;
-          var TransitionLane12 = 131072;
-          var TransitionLane13 = 262144;
-          var TransitionLane14 = 524288;
-          var TransitionLane15 = 1048576;
-          var TransitionLane16 = 2097152;
-          var RetryLanes = 130023424;
-          var RetryLane1 = 4194304;
-          var RetryLane2 = 8388608;
-          var RetryLane3 = 16777216;
-          var RetryLane4 = 33554432;
-          var RetryLane5 = 67108864;
+          var NoLanes = (
+            /*                        */
+            0
+          );
+          var NoLane = (
+            /*                          */
+            0
+          );
+          var SyncLane = (
+            /*                        */
+            1
+          );
+          var InputContinuousHydrationLane = (
+            /*    */
+            2
+          );
+          var InputContinuousLane = (
+            /*             */
+            4
+          );
+          var DefaultHydrationLane = (
+            /*            */
+            8
+          );
+          var DefaultLane = (
+            /*                     */
+            16
+          );
+          var TransitionHydrationLane = (
+            /*                */
+            32
+          );
+          var TransitionLanes = (
+            /*                       */
+            4194240
+          );
+          var TransitionLane1 = (
+            /*                        */
+            64
+          );
+          var TransitionLane2 = (
+            /*                        */
+            128
+          );
+          var TransitionLane3 = (
+            /*                        */
+            256
+          );
+          var TransitionLane4 = (
+            /*                        */
+            512
+          );
+          var TransitionLane5 = (
+            /*                        */
+            1024
+          );
+          var TransitionLane6 = (
+            /*                        */
+            2048
+          );
+          var TransitionLane7 = (
+            /*                        */
+            4096
+          );
+          var TransitionLane8 = (
+            /*                        */
+            8192
+          );
+          var TransitionLane9 = (
+            /*                        */
+            16384
+          );
+          var TransitionLane10 = (
+            /*                       */
+            32768
+          );
+          var TransitionLane11 = (
+            /*                       */
+            65536
+          );
+          var TransitionLane12 = (
+            /*                       */
+            131072
+          );
+          var TransitionLane13 = (
+            /*                       */
+            262144
+          );
+          var TransitionLane14 = (
+            /*                       */
+            524288
+          );
+          var TransitionLane15 = (
+            /*                       */
+            1048576
+          );
+          var TransitionLane16 = (
+            /*                       */
+            2097152
+          );
+          var RetryLanes = (
+            /*                            */
+            130023424
+          );
+          var RetryLane1 = (
+            /*                             */
+            4194304
+          );
+          var RetryLane2 = (
+            /*                             */
+            8388608
+          );
+          var RetryLane3 = (
+            /*                             */
+            16777216
+          );
+          var RetryLane4 = (
+            /*                             */
+            33554432
+          );
+          var RetryLane5 = (
+            /*                             */
+            67108864
+          );
           var SomeRetryLane = RetryLane1;
-          var SelectiveHydrationLane = 134217728;
-          var NonIdleLanes = 268435455;
-          var IdleHydrationLane = 268435456;
-          var IdleLane = 536870912;
-          var OffscreenLane = 1073741824;
+          var SelectiveHydrationLane = (
+            /*          */
+            134217728
+          );
+          var NonIdleLanes = (
+            /*                          */
+            268435455
+          );
+          var IdleHydrationLane = (
+            /*               */
+            268435456
+          );
+          var IdleLane = (
+            /*                        */
+            536870912
+          );
+          var OffscreenLane = (
+            /*                   */
+            1073741824
+          );
           function getLabelForLane(lane) {
             {
               if (lane & SyncLane) {
@@ -6286,10 +6666,19 @@
             if (nextLanes === NoLanes) {
               return NoLanes;
             }
-            if (wipLanes !== NoLanes && wipLanes !== nextLanes && (wipLanes & suspendedLanes) === NoLanes) {
+            if (wipLanes !== NoLanes && wipLanes !== nextLanes && // If we already suspended with a delay, then interrupting is fine. Don't
+            // bother waiting until the root is complete.
+            (wipLanes & suspendedLanes) === NoLanes) {
               var nextLane = getHighestPriorityLane(nextLanes);
               var wipLane = getHighestPriorityLane(wipLanes);
-              if (nextLane >= wipLane || nextLane === DefaultLane && (wipLane & TransitionLanes) !== NoLanes) {
+              if (
+                // Tests whether the next lane is equal or lower priority than the wip
+                // one. This works because the bits decrease in priority as you go left.
+                nextLane >= wipLane || // Default priority updates should not interrupt transition updates. The
+                // only difference between default updates and transition updates is that
+                // default updates do not support refresh transitions.
+                nextLane === DefaultLane && (wipLane & TransitionLanes) !== NoLanes
+              ) {
                 return wipLanes;
               }
             }
@@ -6454,30 +6843,30 @@
           function laneToIndex(lane) {
             return pickArbitraryLaneIndex(lane);
           }
-          function includesSomeLane(a2, b2) {
-            return (a2 & b2) !== NoLanes;
+          function includesSomeLane(a, b) {
+            return (a & b) !== NoLanes;
           }
           function isSubsetOfLanes(set2, subset) {
             return (set2 & subset) === subset;
           }
-          function mergeLanes(a2, b2) {
-            return a2 | b2;
+          function mergeLanes(a, b) {
+            return a | b;
           }
           function removeLanes(set2, subset) {
             return set2 & ~subset;
           }
-          function intersectLanes(a2, b2) {
-            return a2 & b2;
+          function intersectLanes(a, b) {
+            return a & b;
           }
           function laneToLanes(lane) {
             return lane;
           }
-          function higherPriorityLane(a2, b2) {
-            return a2 !== NoLane && a2 < b2 ? a2 : b2;
+          function higherPriorityLane(a, b) {
+            return a !== NoLane && a < b ? a : b;
           }
           function createLaneMap(initial) {
             var laneMap = [];
-            for (var i2 = 0; i2 < TotalLanes; i2++) {
+            for (var i = 0; i < TotalLanes; i++) {
               laneMap.push(initial);
             }
             return laneMap;
@@ -6535,7 +6924,11 @@
             while (lanes) {
               var index2 = pickArbitraryLaneIndex(lanes);
               var lane = 1 << index2;
-              if (lane & entangledLanes | entanglements[index2] & entangledLanes) {
+              if (
+                // Is this one of the newly entangled lanes?
+                lane & entangledLanes | // Is this lane transitively entangled with the newly entangled lanes?
+                entanglements[index2] & entangledLanes
+              ) {
                 entanglements[index2] |= entangledLanes;
               }
               lanes &= ~lane;
@@ -6646,14 +7039,14 @@
               currentUpdatePriority = previousPriority;
             }
           }
-          function higherEventPriority(a2, b2) {
-            return a2 !== 0 && a2 < b2 ? a2 : b2;
+          function higherEventPriority(a, b) {
+            return a !== 0 && a < b ? a : b;
           }
-          function lowerEventPriority(a2, b2) {
-            return a2 === 0 || a2 > b2 ? a2 : b2;
+          function lowerEventPriority(a, b) {
+            return a === 0 || a > b ? a : b;
           }
-          function isHigherEventPriority(a2, b2) {
-            return a2 !== 0 && a2 < b2;
+          function isHigherEventPriority(a, b) {
+            return a !== 0 && a < b;
           }
           function lanesToEventPriority(lanes) {
             var lane = getHighestPriorityLane(lanes);
@@ -6724,6 +7117,7 @@
             "keyup",
             "input",
             "textInput",
+            // Intentionally camelCase
             "copy",
             "cut",
             "paste",
@@ -6856,14 +7250,14 @@
               target,
               priority: updatePriority
             };
-            var i2 = 0;
-            for (; i2 < queuedExplicitHydrationTargets.length; i2++) {
-              if (!isHigherEventPriority(updatePriority, queuedExplicitHydrationTargets[i2].priority)) {
+            var i = 0;
+            for (; i < queuedExplicitHydrationTargets.length; i++) {
+              if (!isHigherEventPriority(updatePriority, queuedExplicitHydrationTargets[i].priority)) {
                 break;
               }
             }
-            queuedExplicitHydrationTargets.splice(i2, 0, queuedTarget);
-            if (i2 === 0) {
+            queuedExplicitHydrationTargets.splice(i, 0, queuedTarget);
+            if (i === 0) {
               attemptExplicitHydrationTarget(queuedTarget);
             }
           }
@@ -6926,8 +7320,8 @@
           function retryIfBlockedOn(unblocked) {
             if (queuedDiscreteEvents.length > 0) {
               scheduleCallbackIfUnblocked(queuedDiscreteEvents[0], unblocked);
-              for (var i2 = 1; i2 < queuedDiscreteEvents.length; i2++) {
-                var queuedEvent = queuedDiscreteEvents[i2];
+              for (var i = 1; i < queuedDiscreteEvents.length; i++) {
+                var queuedEvent = queuedDiscreteEvents[i];
                 if (queuedEvent.blockedOn === unblocked) {
                   queuedEvent.blockedOn = null;
                 }
@@ -7325,8 +7719,18 @@
                 }
                 this.isPropagationStopped = functionThatReturnsTrue;
               },
+              /**
+               * We release all dispatched `SyntheticEvent`s after each event loop, adding
+               * them back into the pool. This allows a way to hold onto a reference that
+               * won't be added back into the pool.
+               */
               persist: function() {
               },
+              /**
+               * Checks if this event should be released back into the pool.
+               *
+               * @return {boolean} True if this should not be released, false otherwise.
+               */
               isPersistent: functionThatReturnsTrue
             });
             return SyntheticBaseEvent;
@@ -7518,6 +7922,7 @@
             repeat: 0,
             locale: 0,
             getModifierState: getEventModifierState,
+            // Legacy Interface
             charCode: function(event) {
               if (event.type === "keypress") {
                 return getEventCharCode(event);
@@ -7573,12 +7978,25 @@
           var SyntheticTransitionEvent = createSyntheticEvent(TransitionEventInterface);
           var WheelEventInterface = assign({}, MouseEventInterface, {
             deltaX: function(event) {
-              return "deltaX" in event ? event.deltaX : "wheelDeltaX" in event ? -event.wheelDeltaX : 0;
+              return "deltaX" in event ? event.deltaX : (
+                // Fallback to `wheelDeltaX` for Webkit and normalize (right is positive).
+                "wheelDeltaX" in event ? -event.wheelDeltaX : 0
+              );
             },
             deltaY: function(event) {
-              return "deltaY" in event ? event.deltaY : "wheelDeltaY" in event ? -event.wheelDeltaY : "wheelDelta" in event ? -event.wheelDelta : 0;
+              return "deltaY" in event ? event.deltaY : (
+                // Fallback to `wheelDeltaY` for Webkit and normalize (down is positive).
+                "wheelDeltaY" in event ? -event.wheelDeltaY : (
+                  // Fallback to `wheelDelta` for IE<9 and normalize (down is positive).
+                  "wheelDelta" in event ? -event.wheelDelta : 0
+                )
+              );
             },
             deltaZ: 0,
+            // Browsers without "deltaMode" is reporting in raw wheel delta where one
+            // notch on the scroll is always +/- 120, roughly equivalent to pixels.
+            // A good approximation of DOM_DELTA_LINE (1) is 5% of viewport size or
+            // ~40 pixels, for DOM_DELTA_SCREEN (2) it is 87.5% of viewport size.
             deltaMode: 0
           });
           var SyntheticWheelEvent = createSyntheticEvent(WheelEventInterface);
@@ -7601,7 +8019,8 @@
           }
           var hasSpaceKeypress = false;
           function isKeypressCommand(nativeEvent) {
-            return (nativeEvent.ctrlKey || nativeEvent.altKey || nativeEvent.metaKey) && !(nativeEvent.ctrlKey && nativeEvent.altKey);
+            return (nativeEvent.ctrlKey || nativeEvent.altKey || nativeEvent.metaKey) && // ctrlKey && altKey is equivalent to AltGr, and is not a command.
+            !(nativeEvent.ctrlKey && nativeEvent.altKey);
           }
           function getCompositionEventType(domEventName) {
             switch (domEventName) {
@@ -7999,8 +8418,8 @@
             }
             accumulateEnterLeaveTwoPhaseListeners(dispatchQueue, leave, enter, from, to);
           }
-          function is(x2, y2) {
-            return x2 === y2 && (x2 !== 0 || 1 / x2 === 1 / y2) || x2 !== x2 && y2 !== y2;
+          function is(x, y) {
+            return x === y && (x !== 0 || 1 / x === 1 / y) || x !== x && y !== y;
           }
           var objectIs = typeof Object.is === "function" ? Object.is : is;
           function shallowEqual(objA, objB) {
@@ -8015,8 +8434,8 @@
             if (keysA.length !== keysB.length) {
               return false;
             }
-            for (var i2 = 0; i2 < keysA.length; i2++) {
-              var currentKey = keysA[i2];
+            for (var i = 0; i < keysA.length; i++) {
+              var currentKey = keysA[i];
               if (!hasOwnProperty.call(objB, currentKey) || !objectIs(objA[currentKey], objB[currentKey])) {
                 return false;
               }
@@ -8066,7 +8485,7 @@
             try {
               anchorNode.nodeType;
               focusNode.nodeType;
-            } catch (e2) {
+            } catch (e) {
               return null;
             }
             return getModernOffsetsFromPoints(outerNode, anchorNode, anchorOffset, focusNode, focusOffset);
@@ -8233,8 +8652,8 @@
               if (typeof priorFocusedElem.focus === "function") {
                 priorFocusedElem.focus();
               }
-              for (var i2 = 0; i2 < ancestors.length; i2++) {
-                var info = ancestors[i2];
+              for (var i = 0; i < ancestors.length; i++) {
+                var info = ancestors[i];
                 info.element.scrollLeft = info.left;
                 info.element.scrollTop = info.top;
               }
@@ -8399,8 +8818,8 @@
             registerTwoPhaseEvent(reactName, [domEventName]);
           }
           function registerSimpleEvents() {
-            for (var i2 = 0; i2 < simpleEventPluginEvents.length; i2++) {
-              var eventName = simpleEventPluginEvents[i2];
+            for (var i = 0; i < simpleEventPluginEvents.length; i++) {
+              var eventName = simpleEventPluginEvents[i];
               var domEventName = eventName.toLowerCase();
               var capitalizedEvent = eventName[0].toUpperCase() + eventName.slice(1);
               registerSimpleEvent(domEventName, "on" + capitalizedEvent);
@@ -8503,7 +8922,11 @@
             }
             var inCapturePhase = (eventSystemFlags & IS_CAPTURE_PHASE) !== 0;
             {
-              var accumulateTargetOnly = !inCapturePhase && domEventName === "scroll";
+              var accumulateTargetOnly = !inCapturePhase && // TODO: ideally, we'd eventually add all events from
+              // nonDelegatedEvents list in DOMPluginEventSystem.
+              // Then we can remove this special list.
+              // This is a breaking change that can wait until React 18.
+              domEventName === "scroll";
               var _listeners = accumulateSinglePhaseListeners(targetInst, reactName, nativeEvent.type, inCapturePhase, accumulateTargetOnly);
               if (_listeners.length > 0) {
                 var _event = new SyntheticEventCtor(reactName, reactEventType, null, nativeEvent, nativeEventTarget);
@@ -8540,8 +8963,8 @@
           function processDispatchQueueItemsInOrder(event, dispatchListeners, inCapturePhase) {
             var previousInstance;
             if (inCapturePhase) {
-              for (var i2 = dispatchListeners.length - 1; i2 >= 0; i2--) {
-                var _dispatchListeners$i = dispatchListeners[i2], instance = _dispatchListeners$i.instance, currentTarget = _dispatchListeners$i.currentTarget, listener = _dispatchListeners$i.listener;
+              for (var i = dispatchListeners.length - 1; i >= 0; i--) {
+                var _dispatchListeners$i = dispatchListeners[i], instance = _dispatchListeners$i.instance, currentTarget = _dispatchListeners$i.currentTarget, listener = _dispatchListeners$i.listener;
                 if (instance !== previousInstance && event.isPropagationStopped()) {
                   return;
                 }
@@ -8561,8 +8984,8 @@
           }
           function processDispatchQueue(dispatchQueue, eventSystemFlags) {
             var inCapturePhase = (eventSystemFlags & IS_CAPTURE_PHASE) !== 0;
-            for (var i2 = 0; i2 < dispatchQueue.length; i2++) {
-              var _dispatchQueue$i = dispatchQueue[i2], event = _dispatchQueue$i.event, listeners = _dispatchQueue$i.listeners;
+            for (var i = 0; i < dispatchQueue.length; i++) {
+              var _dispatchQueue$i = dispatchQueue[i], event = _dispatchQueue$i.event, listeners = _dispatchQueue$i.listeners;
               processDispatchQueueItemsInOrder(event, listeners, inCapturePhase);
             }
             rethrowCaughtError();
@@ -8855,7 +9278,13 @@
           var normalizeHTML;
           {
             warnedUnknownTags = {
+              // There are working polyfills for <dialog>. Let people use it.
               dialog: true,
+              // Electron ships a custom <webview> tag to display external web content in
+              // an isolated frame and process.
+              // This tag is not present in non Electron environments such as JSDom which
+              // is often used for testing purposes.
+              // @see https://electronjs.org/docs/api/webview-tag
               webview: true
             };
             validatePropertiesInDevelopment = function(type, props) {
@@ -8984,9 +9413,9 @@
             }
           }
           function updateDOMProperties(domElement, updatePayload, wasCustomComponentTag, isCustomComponentTag) {
-            for (var i2 = 0; i2 < updatePayload.length; i2 += 2) {
-              var propKey = updatePayload[i2];
-              var propValue = updatePayload[i2 + 1];
+            for (var i = 0; i < updatePayload.length; i += 2) {
+              var propKey = updatePayload[i];
+              var propValue = updatePayload[i + 1];
               if (propKey === STYLE) {
                 setValueForStyles(domElement, propValue);
               } else if (propKey === DANGEROUSLY_SET_INNER_HTML) {
@@ -9015,7 +9444,7 @@
               }
               if (type === "script") {
                 var div = ownerDocument.createElement("div");
-                div.innerHTML = "<script><\/script>";
+                div.innerHTML = "<script></script>";
                 var firstChild = div.firstChild;
                 domElement = div.removeChild(firstChild);
               } else if (typeof props.is === "string") {
@@ -9069,8 +9498,8 @@
                 break;
               case "video":
               case "audio":
-                for (var i2 = 0; i2 < mediaEventTypes.length; i2++) {
-                  listenToNonDelegatedEvent(mediaEventTypes[i2], domElement);
+                for (var i = 0; i < mediaEventTypes.length; i++) {
+                  listenToNonDelegatedEvent(mediaEventTypes[i], domElement);
                 }
                 props = rawProps;
                 break;
@@ -9321,8 +9750,8 @@
                 break;
               case "video":
               case "audio":
-                for (var i2 = 0; i2 < mediaEventTypes.length; i2++) {
-                  listenToNonDelegatedEvent(mediaEventTypes[i2], domElement);
+                for (var i = 0; i < mediaEventTypes.length; i++) {
+                  listenToNonDelegatedEvent(mediaEventTypes[i], domElement);
                 }
                 break;
               case "source":
@@ -9402,12 +9831,15 @@
                     listenToNonDelegatedEvent("scroll", domElement);
                   }
                 }
-              } else if (shouldWarnDev && true && typeof isCustomComponentTag === "boolean") {
+              } else if (shouldWarnDev && true && // Convince Flow we've calculated it (it's DEV-only in this method.)
+              typeof isCustomComponentTag === "boolean") {
                 var serverValue = void 0;
                 var propertyInfo = isCustomComponentTag && enableCustomElementPropertySupport ? null : getPropertyInfo(propKey);
                 if (rawProps[SUPPRESS_HYDRATION_WARNING] === true)
                   ;
-                else if (propKey === SUPPRESS_CONTENT_EDITABLE_WARNING || propKey === SUPPRESS_HYDRATION_WARNING || propKey === "value" || propKey === "checked" || propKey === "selected")
+                else if (propKey === SUPPRESS_CONTENT_EDITABLE_WARNING || propKey === SUPPRESS_HYDRATION_WARNING || // Controlled attributes are not validated
+                // TODO: Only ignore them on controlled tags.
+                propKey === "value" || propKey === "checked" || propKey === "selected")
                   ;
                 else if (propKey === DANGEROUSLY_SET_INNER_HTML) {
                   var serverHTML = domElement.innerHTML;
@@ -9464,7 +9896,10 @@
             }
             {
               if (shouldWarnDev) {
-                if (extraAttributeNames.size > 0 && rawProps[SUPPRESS_HYDRATION_WARNING] !== true) {
+                if (
+                  // $FlowFixMe - Should be inferred as not undefined.
+                  extraAttributeNames.size > 0 && rawProps[SUPPRESS_HYDRATION_WARNING] !== true
+                ) {
                   warnForExtraAttributes(extraAttributeNames);
                 }
               }
@@ -9561,6 +9996,9 @@
               "marquee",
               "object",
               "template",
+              // https://html.spec.whatwg.org/multipage/syntax.html#html-integration-point
+              // TODO: Distinguish by namespace here -- for <title>, including it here
+              // errs on the side of fewer warnings
               "foreignObject",
               "desc",
               "title"
@@ -10629,14 +11067,14 @@
           function flushSyncCallbacks() {
             if (!isFlushingSyncQueue && syncQueue !== null) {
               isFlushingSyncQueue = true;
-              var i2 = 0;
+              var i = 0;
               var previousUpdatePriority = getCurrentUpdatePriority();
               try {
                 var isSync = true;
                 var queue = syncQueue;
                 setCurrentUpdatePriority(DiscreteEventPriority);
-                for (; i2 < queue.length; i2++) {
-                  var callback = queue[i2];
+                for (; i < queue.length; i++) {
+                  var callback = queue[i];
                   do {
                     callback = callback(isSync);
                   } while (callback !== null);
@@ -10645,7 +11083,7 @@
                 includesLegacySyncCallbacks = false;
               } catch (error2) {
                 if (syncQueue !== null) {
-                  syncQueue = syncQueue.slice(i2 + 1);
+                  syncQueue = syncQueue.slice(i + 1);
                 }
                 scheduleCallback(ImmediatePriority, flushSyncCallbacks);
                 throw error2;
@@ -10833,6 +11271,7 @@
                     returnFiber.memoizedProps,
                     returnFiber.stateNode,
                     instance,
+                    // TODO: Delete this argument when we remove the legacy root API.
                     isConcurrentMode
                   );
                   break;
@@ -10895,6 +11334,7 @@
                         parentInstance,
                         _type,
                         _props,
+                        // TODO: Delete this argument when we remove the legacy root API.
                         isConcurrentMode
                       );
                       break;
@@ -10907,6 +11347,7 @@
                         parentProps,
                         parentInstance,
                         _text,
+                        // TODO: Delete this argument when we remove the legacy root API.
                         _isConcurrentMode
                       );
                       break;
@@ -11050,6 +11491,7 @@
                       parentContainer,
                       textInstance,
                       textContent,
+                      // TODO: Delete this argument when we remove the legacy root API.
                       isConcurrentMode
                     );
                     break;
@@ -11065,6 +11507,7 @@
                       parentInstance,
                       textInstance,
                       textContent,
+                      // TODO: Delete this argument when we remove the legacy root API.
                       _isConcurrentMode2
                     );
                     break;
@@ -11207,7 +11650,8 @@
               if (didWarnAboutUnsafeLifecycles.has(fiber.type)) {
                 return;
               }
-              if (typeof instance.componentWillMount === "function" && instance.componentWillMount.__suppressDeprecationWarning !== true) {
+              if (typeof instance.componentWillMount === "function" && // Don't warn about react-lifecycles-compat polyfilled components.
+              instance.componentWillMount.__suppressDeprecationWarning !== true) {
                 pendingComponentWillMountWarnings.push(fiber);
               }
               if (fiber.mode & StrictLegacyMode && typeof instance.UNSAFE_componentWillMount === "function") {
@@ -11577,8 +12021,8 @@
           }
           function finishQueueingConcurrentUpdates() {
             if (concurrentQueues !== null) {
-              for (var i2 = 0; i2 < concurrentQueues.length; i2++) {
-                var queue = concurrentQueues[i2];
+              for (var i = 0; i < concurrentQueues.length; i++) {
+                var queue = concurrentQueues[i];
                 var lastInterleavedUpdate = queue.interleaved;
                 if (lastInterleavedUpdate !== null) {
                   queue.interleaved = null;
@@ -11940,6 +12384,9 @@
                   if (newLastBaseUpdate !== null) {
                     var _clone = {
                       eventTime: updateEventTime,
+                      // This update is going to be committed so we never want uncommit
+                      // it. Using NoLane works because 0 is a subset of all bitmasks, so
+                      // this will never be skipped by the check above.
                       lane: NoLane,
                       tag: update.tag,
                       payload: update.payload,
@@ -11950,7 +12397,9 @@
                   }
                   newState = getStateFromUpdate(workInProgress2, queue, update, newState, props, instance);
                   var callback = update.callback;
-                  if (callback !== null && update.lane !== NoLane) {
+                  if (callback !== null && // If the update was already committed, we should not queue its
+                  // callback again.
+                  update.lane !== NoLane) {
                     workInProgress2.flags |= Callback;
                     var effects = queue.effects;
                     if (effects === null) {
@@ -12015,8 +12464,8 @@
             var effects = finishedQueue.effects;
             finishedQueue.effects = null;
             if (effects !== null) {
-              for (var i2 = 0; i2 < effects.length; i2++) {
-                var effect = effects[i2];
+              for (var i = 0; i < effects.length; i++) {
+                var effect = effects[i];
                 var callback = effect.callback;
                 if (callback !== null) {
                   effect.callback = null;
@@ -12281,7 +12730,10 @@
             var contextType = ctor.contextType;
             {
               if ("contextType" in ctor) {
-                var isValid = contextType === null || contextType !== void 0 && contextType.$$typeof === REACT_CONTEXT_TYPE && contextType._context === void 0;
+                var isValid = (
+                  // Allow null for conditional declaration
+                  contextType === null || contextType !== void 0 && contextType.$$typeof === REACT_CONTEXT_TYPE && contextType._context === void 0
+                );
                 if (!isValid && !didWarnAboutInvalidateContextType.has(ctor)) {
                   didWarnAboutInvalidateContextType.add(ctor);
                   var addendum = "";
@@ -12576,7 +13028,11 @@
               applyDerivedStateFromProps(workInProgress2, ctor, getDerivedStateFromProps, newProps);
               newState = workInProgress2.memoizedState;
             }
-            var shouldUpdate = checkHasForceUpdateAfterProcessing() || checkShouldComponentUpdate(workInProgress2, ctor, oldProps, newProps, oldState, newState, nextContext) || enableLazyContextPropagation;
+            var shouldUpdate = checkHasForceUpdateAfterProcessing() || checkShouldComponentUpdate(workInProgress2, ctor, oldProps, newProps, oldState, newState, nextContext) || // TODO: In some cases, we'll end up checking if context has changed twice,
+            // both before and after `shouldComponentUpdate` has been called. Not ideal,
+            // but I'm loath to refactor this function. This only happens for memoized
+            // components so it's not that common.
+            enableLazyContextPropagation;
             if (shouldUpdate) {
               if (!hasNewLifecycles && (typeof instance.UNSAFE_componentWillUpdate === "function" || typeof instance.componentWillUpdate === "function")) {
                 if (typeof instance.componentWillUpdate === "function") {
@@ -12647,7 +13103,10 @@
             var mixedRef = element.ref;
             if (mixedRef !== null && typeof mixedRef !== "function" && typeof mixedRef !== "object") {
               {
-                if ((returnFiber.mode & StrictLegacyMode || warnAboutStringRefs) && !(element._owner && element._self && element._owner.stateNode !== element._self)) {
+                if ((returnFiber.mode & StrictLegacyMode || warnAboutStringRefs) && // We warn in ReactElement.js if owner and self are equal for string refs
+                // because these cannot be automatically converted to an arrow function
+                // using a codemod. Therefore, we don't have to warn about string refs again.
+                !(element._owner && element._self && element._owner.stateNode !== element._self)) {
                   var componentName = getComponentNameFromFiber(returnFiber) || "Component";
                   if (!didWarnAboutStringRefs[componentName]) {
                     {
@@ -12807,7 +13266,12 @@
                 return updateFragment2(returnFiber, current2, element.props.children, lanes, element.key);
               }
               if (current2 !== null) {
-                if (current2.elementType === elementType || isCompatibleFamilyForHotReloading(current2, element) || typeof elementType === "object" && elementType !== null && elementType.$$typeof === REACT_LAZY_TYPE && resolveLazy(elementType) === current2.type) {
+                if (current2.elementType === elementType || // Keep this check inline so it only runs on the false path:
+                isCompatibleFamilyForHotReloading(current2, element) || // Lazy types should reconcile their resolved type.
+                // We need to do this after the Hot Reloading check above,
+                // because hot reloading has different semantics than prod because
+                // it doesn't resuspend. So we can't let the call below suspend.
+                typeof elementType === "object" && elementType !== null && elementType.$$typeof === REACT_LAZY_TYPE && resolveLazy(elementType) === current2.type) {
                   var existing = useFiber(current2, element.props);
                   existing.ref = coerceRef(returnFiber, current2, element);
                   existing.return = returnFiber;
@@ -12998,8 +13462,8 @@
             function reconcileChildrenArray(returnFiber, currentFirstChild, newChildren, lanes) {
               {
                 var knownKeys = null;
-                for (var i2 = 0; i2 < newChildren.length; i2++) {
-                  var child = newChildren[i2];
+                for (var i = 0; i < newChildren.length; i++) {
+                  var child = newChildren[i];
                   knownKeys = warnOnInvalidKey(child, knownKeys, returnFiber);
                 }
               }
@@ -13100,7 +13564,8 @@
                 throw new Error("An object is not an iterable. This error is likely caused by a bug in React. Please file an issue.");
               }
               {
-                if (typeof Symbol === "function" && newChildrenIterable[Symbol.toStringTag] === "Generator") {
+                if (typeof Symbol === "function" && // $FlowFixMe Flow doesn't know about toStringTag
+                newChildrenIterable[Symbol.toStringTag] === "Generator") {
                   if (!didWarnAboutGenerators) {
                     error("Using Generators as children is unsupported and will likely yield unexpected results because enumerating a generator mutates it. You may convert it to an array with `Array.from()` or the `[...spread]` operator before rendering. Keep in mind you might need to polyfill these features for older browsers.");
                   }
@@ -13248,7 +13713,12 @@
                       return existing;
                     }
                   } else {
-                    if (child.elementType === elementType || isCompatibleFamilyForHotReloading(child, element) || typeof elementType === "object" && elementType !== null && elementType.$$typeof === REACT_LAZY_TYPE && resolveLazy(elementType) === child.type) {
+                    if (child.elementType === elementType || // Keep this check inline so it only runs on the false path:
+                    isCompatibleFamilyForHotReloading(child, element) || // Lazy types should reconcile their resolved type.
+                    // We need to do this after the Hot Reloading check above,
+                    // because hot reloading has different semantics than prod because
+                    // it doesn't resuspend. So we can't let the call below suspend.
+                    typeof elementType === "object" && elementType !== null && elementType.$$typeof === REACT_LAZY_TYPE && resolveLazy(elementType) === child.type) {
                       deleteRemainingChildren(returnFiber, child.sibling);
                       var _existing = useFiber(child, element.props);
                       _existing.ref = coerceRef(returnFiber, child, element);
@@ -13368,11 +13838,11 @@
           var contextStackCursor$1 = createCursor(NO_CONTEXT);
           var contextFiberStackCursor = createCursor(NO_CONTEXT);
           var rootInstanceStackCursor = createCursor(NO_CONTEXT);
-          function requiredContext(c2) {
-            if (c2 === NO_CONTEXT) {
+          function requiredContext(c) {
+            if (c === NO_CONTEXT) {
               throw new Error("Expected host context to exist. This error is likely caused by a bug in React. Please file an issue.");
             }
-            return c2;
+            return c;
           }
           function getRootHostContainer() {
             var rootInstance = requiredContext(rootInstanceStackCursor.current);
@@ -13459,7 +13929,9 @@
                     return node;
                   }
                 }
-              } else if (node.tag === SuspenseListComponent && node.memoizedProps.revealOrder !== void 0) {
+              } else if (node.tag === SuspenseListComponent && // revealOrder undefined can't be trusted because it don't
+              // keep track of whether it suspended or not.
+              node.memoizedProps.revealOrder !== void 0) {
                 var didSuspend = (node.flags & DidCapture) !== NoFlags;
                 if (didSuspend) {
                   return node;
@@ -13483,15 +13955,30 @@
             }
             return null;
           }
-          var NoFlags$1 = 0;
-          var HasEffect = 1;
-          var Insertion = 2;
-          var Layout = 4;
-          var Passive$1 = 8;
+          var NoFlags$1 = (
+            /*   */
+            0
+          );
+          var HasEffect = (
+            /* */
+            1
+          );
+          var Insertion = (
+            /*  */
+            2
+          );
+          var Layout = (
+            /*    */
+            4
+          );
+          var Passive$1 = (
+            /*   */
+            8
+          );
           var workInProgressSources = [];
           function resetWorkInProgressVersions() {
-            for (var i2 = 0; i2 < workInProgressSources.length; i2++) {
-              var mutableSource = workInProgressSources[i2];
+            for (var i = 0; i < workInProgressSources.length; i++) {
+              var mutableSource = workInProgressSources[i];
               {
                 mutableSource._workInProgressVersionPrimary = null;
               }
@@ -13562,10 +14049,10 @@
                 if (hookTypesDev !== null) {
                   var table = "";
                   var secondColumnStart = 30;
-                  for (var i2 = 0; i2 <= hookTypesUpdateIndexDev; i2++) {
-                    var oldHookName = hookTypesDev[i2];
-                    var newHookName = i2 === hookTypesUpdateIndexDev ? currentHookName : oldHookName;
-                    var row = i2 + 1 + ". " + oldHookName;
+                  for (var i = 0; i <= hookTypesUpdateIndexDev; i++) {
+                    var oldHookName = hookTypesDev[i];
+                    var newHookName = i === hookTypesUpdateIndexDev ? currentHookName : oldHookName;
+                    var row = i + 1 + ". " + oldHookName;
                     while (row.length < secondColumnStart) {
                       row += " ";
                     }
@@ -13597,8 +14084,8 @@
                 error("The final argument passed to %s changed size between renders. The order and size of this array must remain constant.\n\nPrevious: %s\nIncoming: %s", currentHookNameInDev, "[" + prevDeps.join(", ") + "]", "[" + nextDeps.join(", ") + "]");
               }
             }
-            for (var i2 = 0; i2 < prevDeps.length && i2 < nextDeps.length; i2++) {
-              if (objectIs(nextDeps[i2], prevDeps[i2])) {
+            for (var i = 0; i < prevDeps.length && i < nextDeps.length; i++) {
+              if (objectIs(nextDeps[i], prevDeps[i])) {
                 continue;
               }
               return false;
@@ -13661,7 +14148,12 @@
               currentHookNameInDev = null;
               hookTypesDev = null;
               hookTypesUpdateIndexDev = -1;
-              if (current2 !== null && (current2.flags & StaticMask) !== (workInProgress2.flags & StaticMask) && (current2.mode & ConcurrentMode) !== NoMode) {
+              if (current2 !== null && (current2.flags & StaticMask) !== (workInProgress2.flags & StaticMask) && // Disable this warning in legacy mode, because legacy Suspense is weird
+              // and creates false positives. To make this work in legacy mode, we'd
+              // need to mark fibers that commit in an incomplete state, somehow. For
+              // now I'll disable the warning that most of the bugs that would trigger
+              // it are either exclusive to concurrent mode or exist in both.
+              (current2.mode & ConcurrentMode) !== NoMode) {
                 error("Internal React error: Expected static flag was missing. Please notify the React team.");
               }
             }
@@ -13851,6 +14343,9 @@
                 } else {
                   if (newBaseQueueLast !== null) {
                     var _clone = {
+                      // This update is going to be committed so we never want uncommit
+                      // it. Using NoLane works because 0 is a subset of all bitmasks, so
+                      // this will never be skipped by the check above.
                       lane: NoLane,
                       action: update.action,
                       hasEagerState: update.hasEagerState,
@@ -14005,7 +14500,9 @@
             }
             var inst = hook.queue;
             updateEffect(subscribeToStore.bind(null, fiber, inst, subscribe), [subscribe]);
-            if (inst.getSnapshot !== getSnapshot || snapshotChanged || workInProgressHook !== null && workInProgressHook.memoizedState.tag & HasEffect) {
+            if (inst.getSnapshot !== getSnapshot || snapshotChanged || // Check if the susbcribe function changed. We can save some memory by
+            // checking whether we scheduled a subscription effect above.
+            workInProgressHook !== null && workInProgressHook.memoizedState.tag & HasEffect) {
               fiber.flags |= Passive;
               pushEffect(HasEffect | Passive$1, updateStoreInstance.bind(null, fiber, inst, nextSnapshot, getSnapshot), void 0, null);
               var root2 = getWorkInProgressRoot();
@@ -14099,6 +14596,7 @@
               create,
               destroy,
               deps,
+              // Circular
               next: null
             };
             var componentUpdateQueue = currentlyRenderingFiber$1.updateQueue;
@@ -15483,9 +15981,9 @@
               } else {
                 console["error"](error2);
               }
-            } catch (e2) {
+            } catch (e) {
               setTimeout(function() {
-                throw e2;
+                throw e;
               });
             }
           }
@@ -15752,6 +16250,7 @@
                   checkPropTypes(
                     innerPropTypes,
                     nextProps,
+                    // Resolved props
                     "prop",
                     getComponentNameFromType(Component)
                   );
@@ -15799,7 +16298,8 @@
           function updateMemoComponent(current2, workInProgress2, Component, nextProps, renderLanes2) {
             if (current2 === null) {
               var type = Component.type;
-              if (isSimpleFunctionComponent(type) && Component.compare === null && Component.defaultProps === void 0) {
+              if (isSimpleFunctionComponent(type) && Component.compare === null && // SimpleMemoComponent codepath doesn't resolve outer props either.
+              Component.defaultProps === void 0) {
                 var resolvedType = type;
                 {
                   resolvedType = resolveFunctionForHotReloading(type);
@@ -15817,6 +16317,7 @@
                   checkPropTypes(
                     innerPropTypes,
                     nextProps,
+                    // Resolved props
                     "prop",
                     getComponentNameFromType(type)
                   );
@@ -15835,6 +16336,7 @@
                 checkPropTypes(
                   _innerPropTypes,
                   nextProps,
+                  // Resolved props
                   "prop",
                   getComponentNameFromType(_type)
                 );
@@ -15867,7 +16369,7 @@
                   var init = lazyComponent._init;
                   try {
                     outerMemoType = init(payload);
-                  } catch (x2) {
+                  } catch (x) {
                     outerMemoType = null;
                   }
                   var outerPropTypes = outerMemoType && outerMemoType.propTypes;
@@ -15875,6 +16377,7 @@
                     checkPropTypes(
                       outerPropTypes,
                       nextProps,
+                      // Resolved (SimpleMemoComponent has no defaultProps)
                       "prop",
                       getComponentNameFromType(outerMemoType)
                     );
@@ -15884,7 +16387,8 @@
             }
             if (current2 !== null) {
               var prevProps = current2.memoizedProps;
-              if (shallowEqual(prevProps, nextProps) && current2.ref === workInProgress2.ref && workInProgress2.type === current2.type) {
+              if (shallowEqual(prevProps, nextProps) && current2.ref === workInProgress2.ref && // Prevent bailout if the implementation changed due to hot reload.
+              workInProgress2.type === current2.type) {
                 didReceiveUpdate = false;
                 workInProgress2.pendingProps = nextProps = prevProps;
                 if (!checkScheduledUpdateOrContext(current2, renderLanes2)) {
@@ -15993,6 +16497,7 @@
                   checkPropTypes(
                     innerPropTypes,
                     nextProps,
+                    // Resolved props
                     "prop",
                     getComponentNameFromType(Component)
                   );
@@ -16068,6 +16573,7 @@
                   checkPropTypes(
                     innerPropTypes,
                     nextProps,
+                    // Resolved props
                     "prop",
                     getComponentNameFromType(Component)
                   );
@@ -16288,6 +16794,7 @@
                       checkPropTypes(
                         outerPropTypes,
                         resolvedProps,
+                        // Resolved for outer only
                         "prop",
                         getComponentNameFromType(Component)
                       );
@@ -16299,6 +16806,7 @@
                   workInProgress2,
                   Component,
                   resolveDefaultProps(Component.type, resolvedProps),
+                  // The inner type can have defaults too
                   renderLanes2
                 );
                 return child;
@@ -16371,7 +16879,11 @@
                 }
               }
             }
-            if (typeof value === "object" && value !== null && typeof value.render === "function" && value.$$typeof === void 0) {
+            if (
+              // Run these checks in production only if the flag is off.
+              // Eventually we'll delete this branch altogether.
+              typeof value === "object" && value !== null && typeof value.render === "function" && value.$$typeof === void 0
+            ) {
               {
                 var _componentName2 = getComponentNameFromType(Component) || "Unknown";
                 if (!didWarnAboutModulePatternComponent[_componentName2]) {
@@ -16636,7 +17148,17 @@
               children: primaryChildren
             };
             var primaryChildFragment;
-            if ((mode & ConcurrentMode) === NoMode && workInProgress2.child !== currentPrimaryChildFragment) {
+            if (
+              // In legacy mode, we commit the primary tree as if it successfully
+              // completed, even though it's in an inconsistent state.
+              (mode & ConcurrentMode) === NoMode && // Make sure we're on the second pass, i.e. the primary child fragment was
+              // already cloned. In legacy mode, the only case where this isn't true is
+              // when DevTools forces us to display a fallback; we skip the first render
+              // pass entirely and go straight to rendering the fallback. (In Concurrent
+              // Mode, SuspenseList can also trigger this scenario, but this is a legacy-
+              // only codepath.)
+              workInProgress2.child !== currentPrimaryChildFragment
+            ) {
               var progressedPrimaryFragment = workInProgress2.child;
               primaryChildFragment = progressedPrimaryFragment;
               primaryChildFragment.childLanes = NoLanes;
@@ -16716,6 +17238,9 @@
                   current2,
                   workInProgress2,
                   renderLanes2,
+                  // TODO: When we delete legacy mode, we should make this error argument
+                  // required — every concurrent mode path that causes hydration to
+                  // de-opt to client rendering should have an error message.
                   null
                 );
               }
@@ -16888,8 +17413,8 @@
             {
               if ((revealOrder === "forwards" || revealOrder === "backwards") && children !== void 0 && children !== null && children !== false) {
                 if (isArray(children)) {
-                  for (var i2 = 0; i2 < children.length; i2++) {
-                    if (!validateSuspenseListNestedChild(children[i2], i2)) {
+                  for (var i = 0; i < children.length; i++) {
+                    if (!validateSuspenseListNestedChild(children[i], i)) {
                       return;
                     }
                   }
@@ -16973,6 +17498,7 @@
                   initSuspenseListRenderState(
                     workInProgress2,
                     false,
+                    // isBackwards
                     tail,
                     lastContentRow,
                     tailMode
@@ -16997,8 +17523,10 @@
                   initSuspenseListRenderState(
                     workInProgress2,
                     true,
+                    // isBackwards
                     _tail,
                     null,
+                    // last
                     tailMode
                   );
                   break;
@@ -17007,8 +17535,11 @@
                   initSuspenseListRenderState(
                     workInProgress2,
                     false,
+                    // isBackwards
                     null,
+                    // tail
                     null,
+                    // last
                     void 0
                   );
                   break;
@@ -17284,11 +17815,14 @@
             if (current2 !== null) {
               var oldProps = current2.memoizedProps;
               var newProps = workInProgress2.pendingProps;
-              if (oldProps !== newProps || hasContextChanged() || workInProgress2.type !== current2.type) {
+              if (oldProps !== newProps || hasContextChanged() || // Force a re-render if the implementation changed due to hot reload:
+              workInProgress2.type !== current2.type) {
                 didReceiveUpdate = true;
               } else {
                 var hasScheduledUpdateOrContext = checkScheduledUpdateOrContext(current2, renderLanes2);
-                if (!hasScheduledUpdateOrContext && (workInProgress2.flags & DidCapture) === NoFlags) {
+                if (!hasScheduledUpdateOrContext && // If this is the second pass of an error or suspense boundary, there
+                // may not be work scheduled on `current`, so we check for this flag.
+                (workInProgress2.flags & DidCapture) === NoFlags) {
                   didReceiveUpdate = false;
                   return attemptEarlyBailoutIfNoScheduledUpdate(current2, workInProgress2, renderLanes2);
                 }
@@ -17364,6 +17898,7 @@
                       checkPropTypes(
                         outerPropTypes,
                         _resolvedProps3,
+                        // Resolved for outer only
                         "prop",
                         getComponentNameFromType(_type2)
                       );
@@ -17646,7 +18181,11 @@
                   } else {
                     if (current2 !== null) {
                       var prevState = current2.memoizedState;
-                      if (!prevState.isDehydrated || (workInProgress2.flags & ForceClientRender) !== NoFlags) {
+                      if (
+                        // Check if this is a client root
+                        !prevState.isDehydrated || // Check if we reverted to client rendering (e.g. due to an error)
+                        (workInProgress2.flags & ForceClientRender) !== NoFlags
+                      ) {
                         workInProgress2.flags |= Snapshot;
                         upgradeHydrationErrorsToRecoverable();
                       }
@@ -17852,7 +18391,12 @@
                         bubbleProperties(workInProgress2);
                         return null;
                       }
-                    } else if (now() * 2 - renderState.renderingStartTime > getRenderTargetTime() && renderLanes2 !== OffscreenLane) {
+                    } else if (
+                      // The time it took to render last row is greater than the remaining
+                      // time we have to render. So rendering one more row would likely
+                      // exceed it.
+                      now() * 2 - renderState.renderingStartTime > getRenderTargetTime() && renderLanes2 !== OffscreenLane
+                    ) {
                       workInProgress2.flags |= DidCapture;
                       didSuspendAlready = true;
                       cutOffTailIfNeeded(renderState, false);
@@ -17901,7 +18445,8 @@
                 if (current2 !== null) {
                   var _prevState = current2.memoizedState;
                   var prevIsHidden = _prevState !== null;
-                  if (prevIsHidden !== nextIsHidden && !enableLegacyHidden) {
+                  if (prevIsHidden !== nextIsHidden && // LegacyHidden doesn't do any hiding — it only pre-renders.
+                  !enableLegacyHidden) {
                     workInProgress2.flags |= Visibility;
                   }
                 }
@@ -18988,7 +19533,10 @@
                 return;
               }
               case OffscreenComponent: {
-                if (deletedFiber.mode & ConcurrentMode) {
+                if (
+                  // TODO: Remove this dead flag
+                  deletedFiber.mode & ConcurrentMode
+                ) {
                   var prevOffscreenSubtreeWasHidden = offscreenSubtreeWasHidden;
                   offscreenSubtreeWasHidden = prevOffscreenSubtreeWasHidden || deletedFiber.memoizedState !== null;
                   recursivelyTraverseDeletionEffects(finishedRoot, nearestMountedAncestor, deletedFiber);
@@ -19060,8 +19608,8 @@
           function recursivelyTraverseMutationEffects(root2, parentFiber, lanes) {
             var deletions = parentFiber.deletions;
             if (deletions !== null) {
-              for (var i2 = 0; i2 < deletions.length; i2++) {
-                var childToDelete = deletions[i2];
+              for (var i = 0; i < deletions.length; i++) {
+                var childToDelete = deletions[i];
                 try {
                   commitDeletionEffects(root2, parentFiber, childToDelete);
                 } catch (error2) {
@@ -19234,7 +19782,10 @@
               }
               case OffscreenComponent: {
                 var _wasHidden = current2 !== null && current2.memoizedState !== null;
-                if (finishedWork.mode & ConcurrentMode) {
+                if (
+                  // TODO: Remove this dead flag
+                  finishedWork.mode & ConcurrentMode
+                ) {
                   var prevOffscreenSubtreeWasHidden = offscreenSubtreeWasHidden;
                   offscreenSubtreeWasHidden = prevOffscreenSubtreeWasHidden || _wasHidden;
                   recursivelyTraverseMutationEffects(root2, finishedWork);
@@ -19338,6 +19889,7 @@
                     nextEffect = child;
                     commitLayoutEffects_begin(
                       child,
+                      // New root; bubble back up to here and stop.
                       root2,
                       committedLanes
                     );
@@ -19563,8 +20115,8 @@
               if ((nextEffect.flags & ChildDeletion) !== NoFlags) {
                 var deletions = fiber.deletions;
                 if (deletions !== null) {
-                  for (var i2 = 0; i2 < deletions.length; i2++) {
-                    var fiberToDelete = deletions[i2];
+                  for (var i = 0; i < deletions.length; i++) {
+                    var fiberToDelete = deletions[i];
                     nextEffect = fiberToDelete;
                     commitPassiveUnmountEffectsInsideOfDeletedTree_begin(fiberToDelete, fiber);
                   }
@@ -19780,14 +20332,20 @@
           var ReactCurrentActQueue = ReactSharedInternals.ReactCurrentActQueue;
           function isLegacyActEnvironment(fiber) {
             {
-              var isReactActEnvironmentGlobal = typeof IS_REACT_ACT_ENVIRONMENT !== "undefined" ? IS_REACT_ACT_ENVIRONMENT : void 0;
+              var isReactActEnvironmentGlobal = (
+                // $FlowExpectedError – Flow doesn't know about IS_REACT_ACT_ENVIRONMENT global
+                typeof IS_REACT_ACT_ENVIRONMENT !== "undefined" ? IS_REACT_ACT_ENVIRONMENT : void 0
+              );
               var jestIsDefined = typeof jest !== "undefined";
               return jestIsDefined && isReactActEnvironmentGlobal !== false;
             }
           }
           function isConcurrentActEnvironment() {
             {
-              var isReactActEnvironmentGlobal = typeof IS_REACT_ACT_ENVIRONMENT !== "undefined" ? IS_REACT_ACT_ENVIRONMENT : void 0;
+              var isReactActEnvironmentGlobal = (
+                // $FlowExpectedError – Flow doesn't know about IS_REACT_ACT_ENVIRONMENT global
+                typeof IS_REACT_ACT_ENVIRONMENT !== "undefined" ? IS_REACT_ACT_ENVIRONMENT : void 0
+              );
               if (!isReactActEnvironmentGlobal && ReactCurrentActQueue.current !== null) {
                 error("The current testing environment is not configured to support act(...)");
               }
@@ -19796,10 +20354,22 @@
           }
           var ceil = Math.ceil;
           var ReactCurrentDispatcher$2 = ReactSharedInternals.ReactCurrentDispatcher, ReactCurrentOwner$2 = ReactSharedInternals.ReactCurrentOwner, ReactCurrentBatchConfig$3 = ReactSharedInternals.ReactCurrentBatchConfig, ReactCurrentActQueue$1 = ReactSharedInternals.ReactCurrentActQueue;
-          var NoContext = 0;
-          var BatchedContext = 1;
-          var RenderContext = 2;
-          var CommitContext = 4;
+          var NoContext = (
+            /*             */
+            0
+          );
+          var BatchedContext = (
+            /*               */
+            1
+          );
+          var RenderContext = (
+            /*                */
+            2
+          );
+          var CommitContext = (
+            /*                */
+            4
+          );
           var RootInProgress = 0;
           var RootFatalErrored = 1;
           var RootErrored = 2;
@@ -19930,7 +20500,8 @@
                 }
               }
               ensureRootIsScheduled(root2, eventTime);
-              if (lane === SyncLane && executionContext === NoContext && (fiber.mode & ConcurrentMode) === NoMode && !ReactCurrentActQueue$1.isBatchingLegacy) {
+              if (lane === SyncLane && executionContext === NoContext && (fiber.mode & ConcurrentMode) === NoMode && // Treat `act` as if it's inside `batchedUpdates`, even in legacy mode.
+              !ReactCurrentActQueue$1.isBatchingLegacy) {
                 resetRenderTimer();
                 flushSyncCallbacksOnlyInLegacyMode();
               }
@@ -19943,7 +20514,11 @@
             ensureRootIsScheduled(root2, eventTime);
           }
           function isUnsafeClassRenderPhaseUpdate(fiber) {
-            return (executionContext & RenderContext) !== NoContext;
+            return (
+              // TODO: Remove outdated deferRenderPhaseUpdateToNextBatch experiment. We
+              // decided not to enable it.
+              (executionContext & RenderContext) !== NoContext
+            );
           }
           function ensureRootIsScheduled(root2, currentTime) {
             var existingCallbackNode = root2.callbackNode;
@@ -19959,7 +20534,10 @@
             }
             var newCallbackPriority = getHighestPriorityLane(nextLanes);
             var existingCallbackPriority = root2.callbackPriority;
-            if (existingCallbackPriority === newCallbackPriority && !(ReactCurrentActQueue$1.current !== null && existingCallbackNode !== fakeActCallbackNode)) {
+            if (existingCallbackPriority === newCallbackPriority && // Special case related to `act`. If the currently scheduled task is a
+            // Scheduler task, rather than an `act` task, cancel it and re-scheduled
+            // on the `act` queue.
+            !(ReactCurrentActQueue$1.current !== null && existingCallbackNode !== fakeActCallbackNode)) {
               {
                 if (existingCallbackNode == null && existingCallbackPriority !== SyncLane) {
                   error("Expected scheduled callback to exist. This error is likely caused by a bug in React. Please file an issue.");
@@ -20124,7 +20702,8 @@
               }
               case RootSuspended: {
                 markRootSuspended$1(root2, lanes);
-                if (includesOnlyRetries(lanes) && !shouldForceFlushFallbacksInDEV()) {
+                if (includesOnlyRetries(lanes) && // do not delay if we're inside an act() scope
+                !shouldForceFlushFallbacksInDEV()) {
                   var msUntilTimeout = globalMostRecentFallbackTime + FALLBACK_THROTTLE_MS - now();
                   if (msUntilTimeout > 10) {
                     var nextLanes = getNextLanes(root2, NoLanes);
@@ -20179,8 +20758,8 @@
                 if (updateQueue !== null) {
                   var checks = updateQueue.stores;
                   if (checks !== null) {
-                    for (var i2 = 0; i2 < checks.length; i2++) {
-                      var check = checks[i2];
+                    for (var i = 0; i < checks.length; i++) {
+                      var check = checks[i];
                       var getSnapshot = check.getSnapshot;
                       var renderedValue = check.value;
                       try {
@@ -20267,26 +20846,27 @@
               }
             }
           }
-          function batchedUpdates$1(fn, a2) {
+          function batchedUpdates$1(fn, a) {
             var prevExecutionContext = executionContext;
             executionContext |= BatchedContext;
             try {
-              return fn(a2);
+              return fn(a);
             } finally {
               executionContext = prevExecutionContext;
-              if (executionContext === NoContext && !ReactCurrentActQueue$1.isBatchingLegacy) {
+              if (executionContext === NoContext && // Treat `act` as if it's inside `batchedUpdates`, even in legacy mode.
+              !ReactCurrentActQueue$1.isBatchingLegacy) {
                 resetRenderTimer();
                 flushSyncCallbacksOnlyInLegacyMode();
               }
             }
           }
-          function discreteUpdates(fn, a2, b2, c2, d2) {
+          function discreteUpdates(fn, a, b, c, d) {
             var previousPriority = getCurrentUpdatePriority();
             var prevTransition = ReactCurrentBatchConfig$3.transition;
             try {
               ReactCurrentBatchConfig$3.transition = null;
               setCurrentUpdatePriority(DiscreteEventPriority);
-              return fn(a2, b2, c2, d2);
+              return fn(a, b, c, d);
             } finally {
               setCurrentUpdatePriority(previousPriority);
               ReactCurrentBatchConfig$3.transition = prevTransition;
@@ -20756,8 +21336,8 @@
             ensureRootIsScheduled(root2, now());
             if (recoverableErrors !== null) {
               var onRecoverableError = root2.onRecoverableError;
-              for (var i2 = 0; i2 < recoverableErrors.length; i2++) {
-                var recoverableError = recoverableErrors[i2];
+              for (var i = 0; i < recoverableErrors.length; i++) {
+                var recoverableError = recoverableErrors[i];
                 var componentStack = recoverableError.stack;
                 var digest = recoverableError.digest;
                 onRecoverableError(recoverableError.value, {
@@ -20851,8 +21431,8 @@
             {
               var profilerEffects = pendingPassiveProfilerEffects;
               pendingPassiveProfilerEffects = [];
-              for (var i2 = 0; i2 < profilerEffects.length; i2++) {
-                var _fiber = profilerEffects[i2];
+              for (var i = 0; i < profilerEffects.length; i++) {
+                var _fiber = profilerEffects[i];
                 commitPassiveEffectDurations(root2, _fiber);
               }
             }
@@ -21535,7 +22115,7 @@
               var nonExtensibleObject = Object.preventExtensions({});
               /* @__PURE__ */ new Map([[nonExtensibleObject, null]]);
               /* @__PURE__ */ new Set([nonExtensibleObject]);
-            } catch (e2) {
+            } catch (e) {
               hasBadMapPolyfill = true;
             }
           }
@@ -21894,6 +22474,7 @@
             fiber.stateNode = {
               containerInfo: portal.containerInfo,
               pendingChildren: null,
+              // Used by persistent updates
               implementation: portal.implementation
             };
             return fiber;
@@ -21995,6 +22576,7 @@
                 element: initialChildren,
                 isDehydrated: hydrate2,
                 cache: null,
+                // not enabled yet
                 transitions: null,
                 pendingSuspenseBoundaries: null
               };
@@ -22010,6 +22592,7 @@
               checkKeyStringCoercion(key);
             }
             return {
+              // This tag allow us to uniquely identify this as a React Portal
               $$typeof: REACT_PORTAL_TYPE,
               key: key == null ? null : "" + key,
               children,
@@ -22268,6 +22851,7 @@
                 }
               } else {
                 updated[oldKey] = copyWithRenameImpl(
+                  // $FlowFixMe number or string is fine here
                   obj[oldKey],
                   oldPath,
                   newPath,
@@ -22281,8 +22865,8 @@
                 warn("copyWithRename() expects paths of the same length");
                 return;
               } else {
-                for (var i2 = 0; i2 < newPath.length - 1; i2++) {
-                  if (oldPath[i2] !== newPath[i2]) {
+                for (var i = 0; i < newPath.length - 1; i++) {
+                  if (oldPath[i] !== newPath[i]) {
                     warn("copyWithRename() expects paths to be the same except for the deepest key");
                     return;
                   }
@@ -22425,15 +23009,23 @@
               currentDispatcherRef: ReactCurrentDispatcher2,
               findHostInstanceByFiber,
               findFiberByHostInstance: findFiberByHostInstance || emptyFindFiberByHostInstance,
+              // React Refresh
               findHostInstancesForRefresh,
               scheduleRefresh,
               scheduleRoot,
               setRefreshHandler,
+              // Enables DevTools to append owner stacks to error messages in DEV mode.
               getCurrentFiber: getCurrentFiberForDevTools,
+              // Enables DevTools to detect reconciler version rather than renderer version
+              // which may not match for third party renderers.
               reconcilerVersion: ReactVersion
             });
           }
-          var defaultOnRecoverableError = typeof reportError === "function" ? reportError : function(error2) {
+          var defaultOnRecoverableError = typeof reportError === "function" ? (
+            // In modern browsers, reportError will dispatch an error event,
+            // emulating an uncaught JavaScript error.
+            reportError
+          ) : function(error2) {
             console["error"](error2);
           };
           function ReactDOMRoot(internalRoot) {
@@ -22564,8 +23156,8 @@
             markContainerAsRoot(root2.current, container);
             listenToAllSupportedEvents(container);
             if (mutableSources) {
-              for (var i2 = 0; i2 < mutableSources.length; i2++) {
-                var mutableSource = mutableSources[i2];
+              for (var i = 0; i < mutableSources.length; i++) {
+                var mutableSource = mutableSources[i];
                 registerMutableSourceForHydration(root2, mutableSource);
               }
             }
@@ -22641,9 +23233,13 @@
                 container,
                 LegacyRoot,
                 null,
+                // hydrationCallbacks
                 false,
+                // isStrictMode
                 false,
+                // concurrentUpdatesByDefaultOverride,
                 "",
+                // identifierPrefix
                 noopOnRecoverableError
               );
               container._reactRootContainer = root2;
@@ -22668,9 +23264,13 @@
                 container,
                 LegacyRoot,
                 null,
+                // hydrationCallbacks
                 false,
+                // isStrictMode
                 false,
+                // concurrentUpdatesByDefaultOverride,
                 "",
+                // identifierPrefix
                 noopOnRecoverableError
               );
               container._reactRootContainer = _root;
@@ -22818,7 +23418,9 @@
           setGetCurrentUpdatePriority(getCurrentUpdatePriority);
           setAttemptHydrationAtPriority(runWithPriority);
           {
-            if (typeof Map !== "function" || Map.prototype == null || typeof Map.prototype.forEach !== "function" || typeof Set !== "function" || Set.prototype == null || typeof Set.prototype.clear !== "function" || typeof Set.prototype.forEach !== "function") {
+            if (typeof Map !== "function" || // $FlowIssue Flow incorrectly thinks Map has no prototype
+            Map.prototype == null || typeof Map.prototype.forEach !== "function" || typeof Set !== "function" || // $FlowIssue Flow incorrectly thinks Set has no prototype
+            Set.prototype == null || typeof Set.prototype.clear !== "function" || typeof Set.prototype.forEach !== "function") {
               error("React depends on Map and Set built-in types. Make sure that you load a polyfill in older browsers. https://reactjs.org/link/react-polyfills");
             }
           }
@@ -22836,6 +23438,8 @@
           }
           var Internals = {
             usingClientEntryPoint: false,
+            // Keep in sync with ReactTestUtils.js.
+            // This is an array for better minification.
             Events: [getInstanceFromNode, getNodeFromInstance, getFiberCurrentPropsFromNode, enqueueStateRestore, restoreStateIfNeeded, batchedUpdates$1]
           };
           function createRoot$1(container, options2) {
@@ -22915,511 +23519,30 @@
   var require_client = __commonJS({
     "node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/client.js"(exports) {
       "use strict";
-      var m2 = require_react_dom();
+      var m = require_react_dom();
       if (false) {
-        exports.createRoot = m2.createRoot;
-        exports.hydrateRoot = m2.hydrateRoot;
+        exports.createRoot = m.createRoot;
+        exports.hydrateRoot = m.hydrateRoot;
       } else {
-        i2 = m2.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
-        exports.createRoot = function(c2, o2) {
-          i2.usingClientEntryPoint = true;
+        i = m.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        exports.createRoot = function(c, o) {
+          i.usingClientEntryPoint = true;
           try {
-            return m2.createRoot(c2, o2);
+            return m.createRoot(c, o);
           } finally {
-            i2.usingClientEntryPoint = false;
+            i.usingClientEntryPoint = false;
           }
         };
-        exports.hydrateRoot = function(c2, h, o2) {
-          i2.usingClientEntryPoint = true;
+        exports.hydrateRoot = function(c, h, o) {
+          i.usingClientEntryPoint = true;
           try {
-            return m2.hydrateRoot(c2, h, o2);
+            return m.hydrateRoot(c, h, o);
           } finally {
-            i2.usingClientEntryPoint = false;
+            i.usingClientEntryPoint = false;
           }
         };
       }
-      var i2;
-    }
-  });
-
-  // node_modules/.pnpm/react-is@18.2.0/node_modules/react-is/cjs/react-is.development.js
-  var require_react_is_development = __commonJS({
-    "node_modules/.pnpm/react-is@18.2.0/node_modules/react-is/cjs/react-is.development.js"(exports) {
-      "use strict";
-      if (true) {
-        (function() {
-          "use strict";
-          var REACT_ELEMENT_TYPE = Symbol.for("react.element");
-          var REACT_PORTAL_TYPE = Symbol.for("react.portal");
-          var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
-          var REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode");
-          var REACT_PROFILER_TYPE = Symbol.for("react.profiler");
-          var REACT_PROVIDER_TYPE = Symbol.for("react.provider");
-          var REACT_CONTEXT_TYPE = Symbol.for("react.context");
-          var REACT_SERVER_CONTEXT_TYPE = Symbol.for("react.server_context");
-          var REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref");
-          var REACT_SUSPENSE_TYPE = Symbol.for("react.suspense");
-          var REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list");
-          var REACT_MEMO_TYPE = Symbol.for("react.memo");
-          var REACT_LAZY_TYPE = Symbol.for("react.lazy");
-          var REACT_OFFSCREEN_TYPE = Symbol.for("react.offscreen");
-          var enableScopeAPI = false;
-          var enableCacheElement = false;
-          var enableTransitionTracing = false;
-          var enableLegacyHidden = false;
-          var enableDebugTracing = false;
-          var REACT_MODULE_REFERENCE;
-          {
-            REACT_MODULE_REFERENCE = Symbol.for("react.module.reference");
-          }
-          function isValidElementType(type) {
-            if (typeof type === "string" || typeof type === "function") {
-              return true;
-            }
-            if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || enableDebugTracing || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || enableLegacyHidden || type === REACT_OFFSCREEN_TYPE || enableScopeAPI || enableCacheElement || enableTransitionTracing) {
-              return true;
-            }
-            if (typeof type === "object" && type !== null) {
-              if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== void 0) {
-                return true;
-              }
-            }
-            return false;
-          }
-          function typeOf(object) {
-            if (typeof object === "object" && object !== null) {
-              var $$typeof = object.$$typeof;
-              switch ($$typeof) {
-                case REACT_ELEMENT_TYPE:
-                  var type = object.type;
-                  switch (type) {
-                    case REACT_FRAGMENT_TYPE:
-                    case REACT_PROFILER_TYPE:
-                    case REACT_STRICT_MODE_TYPE:
-                    case REACT_SUSPENSE_TYPE:
-                    case REACT_SUSPENSE_LIST_TYPE:
-                      return type;
-                    default:
-                      var $$typeofType = type && type.$$typeof;
-                      switch ($$typeofType) {
-                        case REACT_SERVER_CONTEXT_TYPE:
-                        case REACT_CONTEXT_TYPE:
-                        case REACT_FORWARD_REF_TYPE:
-                        case REACT_LAZY_TYPE:
-                        case REACT_MEMO_TYPE:
-                        case REACT_PROVIDER_TYPE:
-                          return $$typeofType;
-                        default:
-                          return $$typeof;
-                      }
-                  }
-                case REACT_PORTAL_TYPE:
-                  return $$typeof;
-              }
-            }
-            return void 0;
-          }
-          var ContextConsumer = REACT_CONTEXT_TYPE;
-          var ContextProvider = REACT_PROVIDER_TYPE;
-          var Element = REACT_ELEMENT_TYPE;
-          var ForwardRef = REACT_FORWARD_REF_TYPE;
-          var Fragment = REACT_FRAGMENT_TYPE;
-          var Lazy = REACT_LAZY_TYPE;
-          var Memo = REACT_MEMO_TYPE;
-          var Portal = REACT_PORTAL_TYPE;
-          var Profiler = REACT_PROFILER_TYPE;
-          var StrictMode = REACT_STRICT_MODE_TYPE;
-          var Suspense = REACT_SUSPENSE_TYPE;
-          var SuspenseList = REACT_SUSPENSE_LIST_TYPE;
-          var hasWarnedAboutDeprecatedIsAsyncMode = false;
-          var hasWarnedAboutDeprecatedIsConcurrentMode = false;
-          function isAsyncMode(object) {
-            {
-              if (!hasWarnedAboutDeprecatedIsAsyncMode) {
-                hasWarnedAboutDeprecatedIsAsyncMode = true;
-                console["warn"]("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 18+.");
-              }
-            }
-            return false;
-          }
-          function isConcurrentMode(object) {
-            {
-              if (!hasWarnedAboutDeprecatedIsConcurrentMode) {
-                hasWarnedAboutDeprecatedIsConcurrentMode = true;
-                console["warn"]("The ReactIs.isConcurrentMode() alias has been deprecated, and will be removed in React 18+.");
-              }
-            }
-            return false;
-          }
-          function isContextConsumer(object) {
-            return typeOf(object) === REACT_CONTEXT_TYPE;
-          }
-          function isContextProvider(object) {
-            return typeOf(object) === REACT_PROVIDER_TYPE;
-          }
-          function isElement(object) {
-            return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-          }
-          function isForwardRef(object) {
-            return typeOf(object) === REACT_FORWARD_REF_TYPE;
-          }
-          function isFragment(object) {
-            return typeOf(object) === REACT_FRAGMENT_TYPE;
-          }
-          function isLazy(object) {
-            return typeOf(object) === REACT_LAZY_TYPE;
-          }
-          function isMemo(object) {
-            return typeOf(object) === REACT_MEMO_TYPE;
-          }
-          function isPortal(object) {
-            return typeOf(object) === REACT_PORTAL_TYPE;
-          }
-          function isProfiler(object) {
-            return typeOf(object) === REACT_PROFILER_TYPE;
-          }
-          function isStrictMode(object) {
-            return typeOf(object) === REACT_STRICT_MODE_TYPE;
-          }
-          function isSuspense(object) {
-            return typeOf(object) === REACT_SUSPENSE_TYPE;
-          }
-          function isSuspenseList(object) {
-            return typeOf(object) === REACT_SUSPENSE_LIST_TYPE;
-          }
-          exports.ContextConsumer = ContextConsumer;
-          exports.ContextProvider = ContextProvider;
-          exports.Element = Element;
-          exports.ForwardRef = ForwardRef;
-          exports.Fragment = Fragment;
-          exports.Lazy = Lazy;
-          exports.Memo = Memo;
-          exports.Portal = Portal;
-          exports.Profiler = Profiler;
-          exports.StrictMode = StrictMode;
-          exports.Suspense = Suspense;
-          exports.SuspenseList = SuspenseList;
-          exports.isAsyncMode = isAsyncMode;
-          exports.isConcurrentMode = isConcurrentMode;
-          exports.isContextConsumer = isContextConsumer;
-          exports.isContextProvider = isContextProvider;
-          exports.isElement = isElement;
-          exports.isForwardRef = isForwardRef;
-          exports.isFragment = isFragment;
-          exports.isLazy = isLazy;
-          exports.isMemo = isMemo;
-          exports.isPortal = isPortal;
-          exports.isProfiler = isProfiler;
-          exports.isStrictMode = isStrictMode;
-          exports.isSuspense = isSuspense;
-          exports.isSuspenseList = isSuspenseList;
-          exports.isValidElementType = isValidElementType;
-          exports.typeOf = typeOf;
-        })();
-      }
-    }
-  });
-
-  // node_modules/.pnpm/react-is@18.2.0/node_modules/react-is/index.js
-  var require_react_is = __commonJS({
-    "node_modules/.pnpm/react-is@18.2.0/node_modules/react-is/index.js"(exports, module) {
-      "use strict";
-      if (false) {
-        module.exports = null;
-      } else {
-        module.exports = require_react_is_development();
-      }
-    }
-  });
-
-  // node_modules/.pnpm/shallowequal@1.1.0/node_modules/shallowequal/index.js
-  var require_shallowequal = __commonJS({
-    "node_modules/.pnpm/shallowequal@1.1.0/node_modules/shallowequal/index.js"(exports, module) {
-      module.exports = function shallowEqual(objA, objB, compare, compareContext) {
-        var ret = compare ? compare.call(compareContext, objA, objB) : void 0;
-        if (ret !== void 0) {
-          return !!ret;
-        }
-        if (objA === objB) {
-          return true;
-        }
-        if (typeof objA !== "object" || !objA || typeof objB !== "object" || !objB) {
-          return false;
-        }
-        var keysA = Object.keys(objA);
-        var keysB = Object.keys(objB);
-        if (keysA.length !== keysB.length) {
-          return false;
-        }
-        var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
-        for (var idx = 0; idx < keysA.length; idx++) {
-          var key = keysA[idx];
-          if (!bHasOwnProperty(key)) {
-            return false;
-          }
-          var valueA = objA[key];
-          var valueB = objB[key];
-          ret = compare ? compare.call(compareContext, valueA, valueB, key) : void 0;
-          if (ret === false || ret === void 0 && valueA !== valueB) {
-            return false;
-          }
-        }
-        return true;
-      };
-    }
-  });
-
-  // node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.development.js
-  var require_react_is_development2 = __commonJS({
-    "node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.development.js"(exports) {
-      "use strict";
-      if (true) {
-        (function() {
-          "use strict";
-          var hasSymbol = typeof Symbol === "function" && Symbol.for;
-          var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for("react.element") : 60103;
-          var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for("react.portal") : 60106;
-          var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for("react.fragment") : 60107;
-          var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for("react.strict_mode") : 60108;
-          var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for("react.profiler") : 60114;
-          var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for("react.provider") : 60109;
-          var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for("react.context") : 60110;
-          var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for("react.async_mode") : 60111;
-          var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for("react.concurrent_mode") : 60111;
-          var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for("react.forward_ref") : 60112;
-          var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for("react.suspense") : 60113;
-          var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for("react.suspense_list") : 60120;
-          var REACT_MEMO_TYPE = hasSymbol ? Symbol.for("react.memo") : 60115;
-          var REACT_LAZY_TYPE = hasSymbol ? Symbol.for("react.lazy") : 60116;
-          var REACT_BLOCK_TYPE = hasSymbol ? Symbol.for("react.block") : 60121;
-          var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for("react.fundamental") : 60117;
-          var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for("react.responder") : 60118;
-          var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for("react.scope") : 60119;
-          function isValidElementType(type) {
-            return typeof type === "string" || typeof type === "function" || type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === "object" && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
-          }
-          function typeOf(object) {
-            if (typeof object === "object" && object !== null) {
-              var $$typeof = object.$$typeof;
-              switch ($$typeof) {
-                case REACT_ELEMENT_TYPE:
-                  var type = object.type;
-                  switch (type) {
-                    case REACT_ASYNC_MODE_TYPE:
-                    case REACT_CONCURRENT_MODE_TYPE:
-                    case REACT_FRAGMENT_TYPE:
-                    case REACT_PROFILER_TYPE:
-                    case REACT_STRICT_MODE_TYPE:
-                    case REACT_SUSPENSE_TYPE:
-                      return type;
-                    default:
-                      var $$typeofType = type && type.$$typeof;
-                      switch ($$typeofType) {
-                        case REACT_CONTEXT_TYPE:
-                        case REACT_FORWARD_REF_TYPE:
-                        case REACT_LAZY_TYPE:
-                        case REACT_MEMO_TYPE:
-                        case REACT_PROVIDER_TYPE:
-                          return $$typeofType;
-                        default:
-                          return $$typeof;
-                      }
-                  }
-                case REACT_PORTAL_TYPE:
-                  return $$typeof;
-              }
-            }
-            return void 0;
-          }
-          var AsyncMode = REACT_ASYNC_MODE_TYPE;
-          var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
-          var ContextConsumer = REACT_CONTEXT_TYPE;
-          var ContextProvider = REACT_PROVIDER_TYPE;
-          var Element = REACT_ELEMENT_TYPE;
-          var ForwardRef = REACT_FORWARD_REF_TYPE;
-          var Fragment = REACT_FRAGMENT_TYPE;
-          var Lazy = REACT_LAZY_TYPE;
-          var Memo = REACT_MEMO_TYPE;
-          var Portal = REACT_PORTAL_TYPE;
-          var Profiler = REACT_PROFILER_TYPE;
-          var StrictMode = REACT_STRICT_MODE_TYPE;
-          var Suspense = REACT_SUSPENSE_TYPE;
-          var hasWarnedAboutDeprecatedIsAsyncMode = false;
-          function isAsyncMode(object) {
-            {
-              if (!hasWarnedAboutDeprecatedIsAsyncMode) {
-                hasWarnedAboutDeprecatedIsAsyncMode = true;
-                console["warn"]("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 17+. Update your code to use ReactIs.isConcurrentMode() instead. It has the exact same API.");
-              }
-            }
-            return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
-          }
-          function isConcurrentMode(object) {
-            return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
-          }
-          function isContextConsumer(object) {
-            return typeOf(object) === REACT_CONTEXT_TYPE;
-          }
-          function isContextProvider(object) {
-            return typeOf(object) === REACT_PROVIDER_TYPE;
-          }
-          function isElement(object) {
-            return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-          }
-          function isForwardRef(object) {
-            return typeOf(object) === REACT_FORWARD_REF_TYPE;
-          }
-          function isFragment(object) {
-            return typeOf(object) === REACT_FRAGMENT_TYPE;
-          }
-          function isLazy(object) {
-            return typeOf(object) === REACT_LAZY_TYPE;
-          }
-          function isMemo(object) {
-            return typeOf(object) === REACT_MEMO_TYPE;
-          }
-          function isPortal(object) {
-            return typeOf(object) === REACT_PORTAL_TYPE;
-          }
-          function isProfiler(object) {
-            return typeOf(object) === REACT_PROFILER_TYPE;
-          }
-          function isStrictMode(object) {
-            return typeOf(object) === REACT_STRICT_MODE_TYPE;
-          }
-          function isSuspense(object) {
-            return typeOf(object) === REACT_SUSPENSE_TYPE;
-          }
-          exports.AsyncMode = AsyncMode;
-          exports.ConcurrentMode = ConcurrentMode;
-          exports.ContextConsumer = ContextConsumer;
-          exports.ContextProvider = ContextProvider;
-          exports.Element = Element;
-          exports.ForwardRef = ForwardRef;
-          exports.Fragment = Fragment;
-          exports.Lazy = Lazy;
-          exports.Memo = Memo;
-          exports.Portal = Portal;
-          exports.Profiler = Profiler;
-          exports.StrictMode = StrictMode;
-          exports.Suspense = Suspense;
-          exports.isAsyncMode = isAsyncMode;
-          exports.isConcurrentMode = isConcurrentMode;
-          exports.isContextConsumer = isContextConsumer;
-          exports.isContextProvider = isContextProvider;
-          exports.isElement = isElement;
-          exports.isForwardRef = isForwardRef;
-          exports.isFragment = isFragment;
-          exports.isLazy = isLazy;
-          exports.isMemo = isMemo;
-          exports.isPortal = isPortal;
-          exports.isProfiler = isProfiler;
-          exports.isStrictMode = isStrictMode;
-          exports.isSuspense = isSuspense;
-          exports.isValidElementType = isValidElementType;
-          exports.typeOf = typeOf;
-        })();
-      }
-    }
-  });
-
-  // node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/index.js
-  var require_react_is2 = __commonJS({
-    "node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/index.js"(exports, module) {
-      "use strict";
-      if (false) {
-        module.exports = null;
-      } else {
-        module.exports = require_react_is_development2();
-      }
-    }
-  });
-
-  // node_modules/.pnpm/hoist-non-react-statics@3.3.2/node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js
-  var require_hoist_non_react_statics_cjs = __commonJS({
-    "node_modules/.pnpm/hoist-non-react-statics@3.3.2/node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js"(exports, module) {
-      "use strict";
-      var reactIs = require_react_is2();
-      var REACT_STATICS = {
-        childContextTypes: true,
-        contextType: true,
-        contextTypes: true,
-        defaultProps: true,
-        displayName: true,
-        getDefaultProps: true,
-        getDerivedStateFromError: true,
-        getDerivedStateFromProps: true,
-        mixins: true,
-        propTypes: true,
-        type: true
-      };
-      var KNOWN_STATICS = {
-        name: true,
-        length: true,
-        prototype: true,
-        caller: true,
-        callee: true,
-        arguments: true,
-        arity: true
-      };
-      var FORWARD_REF_STATICS = {
-        "$$typeof": true,
-        render: true,
-        defaultProps: true,
-        displayName: true,
-        propTypes: true
-      };
-      var MEMO_STATICS = {
-        "$$typeof": true,
-        compare: true,
-        defaultProps: true,
-        displayName: true,
-        propTypes: true,
-        type: true
-      };
-      var TYPE_STATICS = {};
-      TYPE_STATICS[reactIs.ForwardRef] = FORWARD_REF_STATICS;
-      TYPE_STATICS[reactIs.Memo] = MEMO_STATICS;
-      function getStatics(component) {
-        if (reactIs.isMemo(component)) {
-          return MEMO_STATICS;
-        }
-        return TYPE_STATICS[component["$$typeof"]] || REACT_STATICS;
-      }
-      var defineProperty = Object.defineProperty;
-      var getOwnPropertyNames = Object.getOwnPropertyNames;
-      var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-      var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-      var getPrototypeOf = Object.getPrototypeOf;
-      var objectPrototype = Object.prototype;
-      function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
-        if (typeof sourceComponent !== "string") {
-          if (objectPrototype) {
-            var inheritedComponent = getPrototypeOf(sourceComponent);
-            if (inheritedComponent && inheritedComponent !== objectPrototype) {
-              hoistNonReactStatics(targetComponent, inheritedComponent, blacklist);
-            }
-          }
-          var keys = getOwnPropertyNames(sourceComponent);
-          if (getOwnPropertySymbols) {
-            keys = keys.concat(getOwnPropertySymbols(sourceComponent));
-          }
-          var targetStatics = getStatics(targetComponent);
-          var sourceStatics = getStatics(sourceComponent);
-          for (var i2 = 0; i2 < keys.length; ++i2) {
-            var key = keys[i2];
-            if (!KNOWN_STATICS[key] && !(blacklist && blacklist[key]) && !(sourceStatics && sourceStatics[key]) && !(targetStatics && targetStatics[key])) {
-              var descriptor = getOwnPropertyDescriptor(sourceComponent, key);
-              try {
-                defineProperty(targetComponent, key, descriptor);
-              } catch (e2) {
-              }
-            }
-          }
-        }
-        return targetComponent;
-      }
-      module.exports = hoistNonReactStatics;
+      var i;
     }
   });
 
@@ -23431,8 +23554,8 @@
         var hasOwn = {}.hasOwnProperty;
         function classNames2() {
           var classes = [];
-          for (var i2 = 0; i2 < arguments.length; i2++) {
-            var arg = arguments[i2];
+          for (var i = 0; i < arguments.length; i++) {
+            var arg = arguments[i];
             if (!arg)
               continue;
             var argType = typeof arg;
@@ -23549,7 +23672,11 @@
               return true;
             }
             if (typeof type === "object" && type !== null) {
-              if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== void 0) {
+              if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || // This needs to include all possible module reference object
+              // types supported by any Flight configuration anywhere since
+              // we don't know which Flight build this will end up being used
+              // with.
+              type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== void 0) {
                 return true;
               }
             }
@@ -23617,7 +23744,7 @@
                   var init = lazyComponent._init;
                   try {
                     return getComponentNameFromType(init(payload));
-                  } catch (x2) {
+                  } catch (x) {
                     return null;
                   }
                 }
@@ -23711,8 +23838,8 @@
               if (prefix === void 0) {
                 try {
                   throw Error();
-                } catch (x2) {
-                  var match = x2.stack.trim().match(/\n( *(at )?)/);
+                } catch (x) {
+                  var match = x.stack.trim().match(/\n( *(at )?)/);
                   prefix = match && match[1] || "";
                 }
               }
@@ -23758,23 +23885,23 @@
                 if (typeof Reflect === "object" && Reflect.construct) {
                   try {
                     Reflect.construct(Fake, []);
-                  } catch (x2) {
-                    control = x2;
+                  } catch (x) {
+                    control = x;
                   }
                   Reflect.construct(fn, [], Fake);
                 } else {
                   try {
                     Fake.call();
-                  } catch (x2) {
-                    control = x2;
+                  } catch (x) {
+                    control = x;
                   }
                   fn.call(Fake.prototype);
                 }
               } else {
                 try {
                   throw Error();
-                } catch (x2) {
-                  control = x2;
+                } catch (x) {
+                  control = x;
                 }
                 fn();
               }
@@ -23782,19 +23909,19 @@
               if (sample && control && typeof sample.stack === "string") {
                 var sampleLines = sample.stack.split("\n");
                 var controlLines = control.stack.split("\n");
-                var s2 = sampleLines.length - 1;
-                var c2 = controlLines.length - 1;
-                while (s2 >= 1 && c2 >= 0 && sampleLines[s2] !== controlLines[c2]) {
-                  c2--;
+                var s = sampleLines.length - 1;
+                var c = controlLines.length - 1;
+                while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
+                  c--;
                 }
-                for (; s2 >= 1 && c2 >= 0; s2--, c2--) {
-                  if (sampleLines[s2] !== controlLines[c2]) {
-                    if (s2 !== 1 || c2 !== 1) {
+                for (; s >= 1 && c >= 0; s--, c--) {
+                  if (sampleLines[s] !== controlLines[c]) {
+                    if (s !== 1 || c !== 1) {
                       do {
-                        s2--;
-                        c2--;
-                        if (c2 < 0 || sampleLines[s2] !== controlLines[c2]) {
-                          var _frame = "\n" + sampleLines[s2].replace(" at new ", " at ");
+                        s--;
+                        c--;
+                        if (c < 0 || sampleLines[s] !== controlLines[c]) {
+                          var _frame = "\n" + sampleLines[s].replace(" at new ", " at ");
                           if (fn.displayName && _frame.includes("<anonymous>")) {
                             _frame = _frame.replace("<anonymous>", fn.displayName);
                           }
@@ -23805,7 +23932,7 @@
                           }
                           return _frame;
                         }
-                      } while (s2 >= 1 && c2 >= 0);
+                      } while (s >= 1 && c >= 0);
                     }
                     break;
                   }
@@ -23867,7 +23994,7 @@
                   var init = lazyComponent._init;
                   try {
                     return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
-                  } catch (x2) {
+                  } catch (x) {
                   }
                 }
               }
@@ -23920,8 +24047,8 @@
             }
           }
           var isArrayImpl = Array.isArray;
-          function isArray(a2) {
-            return isArrayImpl(a2);
+          function isArray(a) {
+            return isArrayImpl(a);
           }
           function typeName(value) {
             {
@@ -23935,7 +24062,7 @@
               try {
                 testStringCoercion(value);
                 return false;
-              } catch (e2) {
+              } catch (e) {
                 return true;
               }
             }
@@ -24029,11 +24156,14 @@
           }
           var ReactElement = function(type, key, ref, self, source, owner, props) {
             var element = {
+              // This tag allows us to uniquely identify this as a React Element
               $$typeof: REACT_ELEMENT_TYPE,
+              // Built-in properties that belong on the element
               type,
               key,
               ref,
               props,
+              // Record the component responsible for creating this element.
               _owner: owner
             };
             {
@@ -24192,8 +24322,8 @@
                 return;
               }
               if (isArray(node)) {
-                for (var i2 = 0; i2 < node.length; i2++) {
-                  var child = node[i2];
+                for (var i = 0; i < node.length; i++) {
+                  var child = node[i];
                   if (isValidElement(child)) {
                     validateExplicitKey(child, parentType);
                   }
@@ -24227,7 +24357,9 @@
               var propTypes;
               if (typeof type === "function") {
                 propTypes = type.propTypes;
-              } else if (typeof type === "object" && (type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_MEMO_TYPE)) {
+              } else if (typeof type === "object" && (type.$$typeof === REACT_FORWARD_REF_TYPE || // Note: Memo only checks outer props here.
+              // Inner props are checked in the reconciler.
+              type.$$typeof === REACT_MEMO_TYPE)) {
                 propTypes = type.propTypes;
               } else {
                 return;
@@ -24248,8 +24380,8 @@
           function validateFragmentProps(fragment) {
             {
               var keys = Object.keys(fragment.props);
-              for (var i2 = 0; i2 < keys.length; i2++) {
-                var key = keys[i2];
+              for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
                 if (key !== "children" && key !== "key") {
                   setCurrentlyValidatingElement$1(fragment);
                   error("Invalid prop `%s` supplied to `React.Fragment`. React.Fragment can only have `key` and `children` props.", key);
@@ -24300,8 +24432,8 @@
                 if (children !== void 0) {
                   if (isStaticChildren) {
                     if (isArray(children)) {
-                      for (var i2 = 0; i2 < children.length; i2++) {
-                        validateChildKeys(children[i2], type);
+                      for (var i = 0; i < children.length; i++) {
+                        validateChildKeys(children[i], type);
                       }
                       if (Object.freeze) {
                         Object.freeze(children);
@@ -24355,1228 +24487,15 @@
   });
 
   // src/index.ts
-  var import_react5 = __toESM(require_react(), 1);
+  var import_react4 = __toESM(require_react(), 1);
   var import_client = __toESM(require_client(), 1);
 
-  // node_modules/.pnpm/styled-components@5.3.5_react-dom@18.2.0_react-is@18.2.0_react@18.2.0/node_modules/styled-components/dist/styled-components.esm.js
-  var import_react_is = __toESM(require_react_is());
-  var import_react = __toESM(require_react());
-  var import_shallowequal = __toESM(require_shallowequal());
-
-  // node_modules/.pnpm/@emotion+stylis@0.8.5/node_modules/@emotion/stylis/dist/stylis.esm.js
-  function stylis_min(W2) {
-    function M2(d2, c2, e2, h, a2) {
-      for (var m2 = 0, b2 = 0, v2 = 0, n2 = 0, q2, g2, x2 = 0, K2 = 0, k2, u2 = k2 = q2 = 0, l2 = 0, r2 = 0, I2 = 0, t2 = 0, B3 = e2.length, J2 = B3 - 1, y2, f = "", p = "", F3 = "", G3 = "", C2; l2 < B3; ) {
-        g2 = e2.charCodeAt(l2);
-        l2 === J2 && 0 !== b2 + n2 + v2 + m2 && (0 !== b2 && (g2 = 47 === b2 ? 10 : 47), n2 = v2 = m2 = 0, B3++, J2++);
-        if (0 === b2 + n2 + v2 + m2) {
-          if (l2 === J2 && (0 < r2 && (f = f.replace(N2, "")), 0 < f.trim().length)) {
-            switch (g2) {
-              case 32:
-              case 9:
-              case 59:
-              case 13:
-              case 10:
-                break;
-              default:
-                f += e2.charAt(l2);
-            }
-            g2 = 59;
-          }
-          switch (g2) {
-            case 123:
-              f = f.trim();
-              q2 = f.charCodeAt(0);
-              k2 = 1;
-              for (t2 = ++l2; l2 < B3; ) {
-                switch (g2 = e2.charCodeAt(l2)) {
-                  case 123:
-                    k2++;
-                    break;
-                  case 125:
-                    k2--;
-                    break;
-                  case 47:
-                    switch (g2 = e2.charCodeAt(l2 + 1)) {
-                      case 42:
-                      case 47:
-                        a: {
-                          for (u2 = l2 + 1; u2 < J2; ++u2) {
-                            switch (e2.charCodeAt(u2)) {
-                              case 47:
-                                if (42 === g2 && 42 === e2.charCodeAt(u2 - 1) && l2 + 2 !== u2) {
-                                  l2 = u2 + 1;
-                                  break a;
-                                }
-                                break;
-                              case 10:
-                                if (47 === g2) {
-                                  l2 = u2 + 1;
-                                  break a;
-                                }
-                            }
-                          }
-                          l2 = u2;
-                        }
-                    }
-                    break;
-                  case 91:
-                    g2++;
-                  case 40:
-                    g2++;
-                  case 34:
-                  case 39:
-                    for (; l2++ < J2 && e2.charCodeAt(l2) !== g2; ) {
-                    }
-                }
-                if (0 === k2)
-                  break;
-                l2++;
-              }
-              k2 = e2.substring(t2, l2);
-              0 === q2 && (q2 = (f = f.replace(ca, "").trim()).charCodeAt(0));
-              switch (q2) {
-                case 64:
-                  0 < r2 && (f = f.replace(N2, ""));
-                  g2 = f.charCodeAt(1);
-                  switch (g2) {
-                    case 100:
-                    case 109:
-                    case 115:
-                    case 45:
-                      r2 = c2;
-                      break;
-                    default:
-                      r2 = O2;
-                  }
-                  k2 = M2(c2, r2, k2, g2, a2 + 1);
-                  t2 = k2.length;
-                  0 < A && (r2 = X2(O2, f, I2), C2 = H2(3, k2, r2, c2, D2, z2, t2, g2, a2, h), f = r2.join(""), void 0 !== C2 && 0 === (t2 = (k2 = C2.trim()).length) && (g2 = 0, k2 = ""));
-                  if (0 < t2)
-                    switch (g2) {
-                      case 115:
-                        f = f.replace(da, ea);
-                      case 100:
-                      case 109:
-                      case 45:
-                        k2 = f + "{" + k2 + "}";
-                        break;
-                      case 107:
-                        f = f.replace(fa, "$1 $2");
-                        k2 = f + "{" + k2 + "}";
-                        k2 = 1 === w2 || 2 === w2 && L2("@" + k2, 3) ? "@-webkit-" + k2 + "@" + k2 : "@" + k2;
-                        break;
-                      default:
-                        k2 = f + k2, 112 === h && (k2 = (p += k2, ""));
-                    }
-                  else
-                    k2 = "";
-                  break;
-                default:
-                  k2 = M2(c2, X2(c2, f, I2), k2, h, a2 + 1);
-              }
-              F3 += k2;
-              k2 = I2 = r2 = u2 = q2 = 0;
-              f = "";
-              g2 = e2.charCodeAt(++l2);
-              break;
-            case 125:
-            case 59:
-              f = (0 < r2 ? f.replace(N2, "") : f).trim();
-              if (1 < (t2 = f.length))
-                switch (0 === u2 && (q2 = f.charCodeAt(0), 45 === q2 || 96 < q2 && 123 > q2) && (t2 = (f = f.replace(" ", ":")).length), 0 < A && void 0 !== (C2 = H2(1, f, c2, d2, D2, z2, p.length, h, a2, h)) && 0 === (t2 = (f = C2.trim()).length) && (f = "\0\0"), q2 = f.charCodeAt(0), g2 = f.charCodeAt(1), q2) {
-                  case 0:
-                    break;
-                  case 64:
-                    if (105 === g2 || 99 === g2) {
-                      G3 += f + e2.charAt(l2);
-                      break;
-                    }
-                  default:
-                    58 !== f.charCodeAt(t2 - 1) && (p += P(f, q2, g2, f.charCodeAt(2)));
-                }
-              I2 = r2 = u2 = q2 = 0;
-              f = "";
-              g2 = e2.charCodeAt(++l2);
-          }
-        }
-        switch (g2) {
-          case 13:
-          case 10:
-            47 === b2 ? b2 = 0 : 0 === 1 + q2 && 107 !== h && 0 < f.length && (r2 = 1, f += "\0");
-            0 < A * Y2 && H2(0, f, c2, d2, D2, z2, p.length, h, a2, h);
-            z2 = 1;
-            D2++;
-            break;
-          case 59:
-          case 125:
-            if (0 === b2 + n2 + v2 + m2) {
-              z2++;
-              break;
-            }
-          default:
-            z2++;
-            y2 = e2.charAt(l2);
-            switch (g2) {
-              case 9:
-              case 32:
-                if (0 === n2 + m2 + b2)
-                  switch (x2) {
-                    case 44:
-                    case 58:
-                    case 9:
-                    case 32:
-                      y2 = "";
-                      break;
-                    default:
-                      32 !== g2 && (y2 = " ");
-                  }
-                break;
-              case 0:
-                y2 = "\\0";
-                break;
-              case 12:
-                y2 = "\\f";
-                break;
-              case 11:
-                y2 = "\\v";
-                break;
-              case 38:
-                0 === n2 + b2 + m2 && (r2 = I2 = 1, y2 = "\f" + y2);
-                break;
-              case 108:
-                if (0 === n2 + b2 + m2 + E2 && 0 < u2)
-                  switch (l2 - u2) {
-                    case 2:
-                      112 === x2 && 58 === e2.charCodeAt(l2 - 3) && (E2 = x2);
-                    case 8:
-                      111 === K2 && (E2 = K2);
-                  }
-                break;
-              case 58:
-                0 === n2 + b2 + m2 && (u2 = l2);
-                break;
-              case 44:
-                0 === b2 + v2 + n2 + m2 && (r2 = 1, y2 += "\r");
-                break;
-              case 34:
-              case 39:
-                0 === b2 && (n2 = n2 === g2 ? 0 : 0 === n2 ? g2 : n2);
-                break;
-              case 91:
-                0 === n2 + b2 + v2 && m2++;
-                break;
-              case 93:
-                0 === n2 + b2 + v2 && m2--;
-                break;
-              case 41:
-                0 === n2 + b2 + m2 && v2--;
-                break;
-              case 40:
-                if (0 === n2 + b2 + m2) {
-                  if (0 === q2)
-                    switch (2 * x2 + 3 * K2) {
-                      case 533:
-                        break;
-                      default:
-                        q2 = 1;
-                    }
-                  v2++;
-                }
-                break;
-              case 64:
-                0 === b2 + v2 + n2 + m2 + u2 + k2 && (k2 = 1);
-                break;
-              case 42:
-              case 47:
-                if (!(0 < n2 + m2 + v2))
-                  switch (b2) {
-                    case 0:
-                      switch (2 * g2 + 3 * e2.charCodeAt(l2 + 1)) {
-                        case 235:
-                          b2 = 47;
-                          break;
-                        case 220:
-                          t2 = l2, b2 = 42;
-                      }
-                      break;
-                    case 42:
-                      47 === g2 && 42 === x2 && t2 + 2 !== l2 && (33 === e2.charCodeAt(t2 + 2) && (p += e2.substring(t2, l2 + 1)), y2 = "", b2 = 0);
-                  }
-            }
-            0 === b2 && (f += y2);
-        }
-        K2 = x2;
-        x2 = g2;
-        l2++;
-      }
-      t2 = p.length;
-      if (0 < t2) {
-        r2 = c2;
-        if (0 < A && (C2 = H2(2, p, r2, d2, D2, z2, t2, h, a2, h), void 0 !== C2 && 0 === (p = C2).length))
-          return G3 + p + F3;
-        p = r2.join(",") + "{" + p + "}";
-        if (0 !== w2 * E2) {
-          2 !== w2 || L2(p, 2) || (E2 = 0);
-          switch (E2) {
-            case 111:
-              p = p.replace(ha, ":-moz-$1") + p;
-              break;
-            case 112:
-              p = p.replace(Q2, "::-webkit-input-$1") + p.replace(Q2, "::-moz-$1") + p.replace(Q2, ":-ms-input-$1") + p;
-          }
-          E2 = 0;
-        }
-      }
-      return G3 + p + F3;
-    }
-    function X2(d2, c2, e2) {
-      var h = c2.trim().split(ia);
-      c2 = h;
-      var a2 = h.length, m2 = d2.length;
-      switch (m2) {
-        case 0:
-        case 1:
-          var b2 = 0;
-          for (d2 = 0 === m2 ? "" : d2[0] + " "; b2 < a2; ++b2) {
-            c2[b2] = Z2(d2, c2[b2], e2).trim();
-          }
-          break;
-        default:
-          var v2 = b2 = 0;
-          for (c2 = []; b2 < a2; ++b2) {
-            for (var n2 = 0; n2 < m2; ++n2) {
-              c2[v2++] = Z2(d2[n2] + " ", h[b2], e2).trim();
-            }
-          }
-      }
-      return c2;
-    }
-    function Z2(d2, c2, e2) {
-      var h = c2.charCodeAt(0);
-      33 > h && (h = (c2 = c2.trim()).charCodeAt(0));
-      switch (h) {
-        case 38:
-          return c2.replace(F2, "$1" + d2.trim());
-        case 58:
-          return d2.trim() + c2.replace(F2, "$1" + d2.trim());
-        default:
-          if (0 < 1 * e2 && 0 < c2.indexOf("\f"))
-            return c2.replace(F2, (58 === d2.charCodeAt(0) ? "" : "$1") + d2.trim());
-      }
-      return d2 + c2;
-    }
-    function P(d2, c2, e2, h) {
-      var a2 = d2 + ";", m2 = 2 * c2 + 3 * e2 + 4 * h;
-      if (944 === m2) {
-        d2 = a2.indexOf(":", 9) + 1;
-        var b2 = a2.substring(d2, a2.length - 1).trim();
-        b2 = a2.substring(0, d2).trim() + b2 + ";";
-        return 1 === w2 || 2 === w2 && L2(b2, 1) ? "-webkit-" + b2 + b2 : b2;
-      }
-      if (0 === w2 || 2 === w2 && !L2(a2, 1))
-        return a2;
-      switch (m2) {
-        case 1015:
-          return 97 === a2.charCodeAt(10) ? "-webkit-" + a2 + a2 : a2;
-        case 951:
-          return 116 === a2.charCodeAt(3) ? "-webkit-" + a2 + a2 : a2;
-        case 963:
-          return 110 === a2.charCodeAt(5) ? "-webkit-" + a2 + a2 : a2;
-        case 1009:
-          if (100 !== a2.charCodeAt(4))
-            break;
-        case 969:
-        case 942:
-          return "-webkit-" + a2 + a2;
-        case 978:
-          return "-webkit-" + a2 + "-moz-" + a2 + a2;
-        case 1019:
-        case 983:
-          return "-webkit-" + a2 + "-moz-" + a2 + "-ms-" + a2 + a2;
-        case 883:
-          if (45 === a2.charCodeAt(8))
-            return "-webkit-" + a2 + a2;
-          if (0 < a2.indexOf("image-set(", 11))
-            return a2.replace(ja, "$1-webkit-$2") + a2;
-          break;
-        case 932:
-          if (45 === a2.charCodeAt(4))
-            switch (a2.charCodeAt(5)) {
-              case 103:
-                return "-webkit-box-" + a2.replace("-grow", "") + "-webkit-" + a2 + "-ms-" + a2.replace("grow", "positive") + a2;
-              case 115:
-                return "-webkit-" + a2 + "-ms-" + a2.replace("shrink", "negative") + a2;
-              case 98:
-                return "-webkit-" + a2 + "-ms-" + a2.replace("basis", "preferred-size") + a2;
-            }
-          return "-webkit-" + a2 + "-ms-" + a2 + a2;
-        case 964:
-          return "-webkit-" + a2 + "-ms-flex-" + a2 + a2;
-        case 1023:
-          if (99 !== a2.charCodeAt(8))
-            break;
-          b2 = a2.substring(a2.indexOf(":", 15)).replace("flex-", "").replace("space-between", "justify");
-          return "-webkit-box-pack" + b2 + "-webkit-" + a2 + "-ms-flex-pack" + b2 + a2;
-        case 1005:
-          return ka.test(a2) ? a2.replace(aa, ":-webkit-") + a2.replace(aa, ":-moz-") + a2 : a2;
-        case 1e3:
-          b2 = a2.substring(13).trim();
-          c2 = b2.indexOf("-") + 1;
-          switch (b2.charCodeAt(0) + b2.charCodeAt(c2)) {
-            case 226:
-              b2 = a2.replace(G2, "tb");
-              break;
-            case 232:
-              b2 = a2.replace(G2, "tb-rl");
-              break;
-            case 220:
-              b2 = a2.replace(G2, "lr");
-              break;
-            default:
-              return a2;
-          }
-          return "-webkit-" + a2 + "-ms-" + b2 + a2;
-        case 1017:
-          if (-1 === a2.indexOf("sticky", 9))
-            break;
-        case 975:
-          c2 = (a2 = d2).length - 10;
-          b2 = (33 === a2.charCodeAt(c2) ? a2.substring(0, c2) : a2).substring(d2.indexOf(":", 7) + 1).trim();
-          switch (m2 = b2.charCodeAt(0) + (b2.charCodeAt(7) | 0)) {
-            case 203:
-              if (111 > b2.charCodeAt(8))
-                break;
-            case 115:
-              a2 = a2.replace(b2, "-webkit-" + b2) + ";" + a2;
-              break;
-            case 207:
-            case 102:
-              a2 = a2.replace(b2, "-webkit-" + (102 < m2 ? "inline-" : "") + "box") + ";" + a2.replace(b2, "-webkit-" + b2) + ";" + a2.replace(b2, "-ms-" + b2 + "box") + ";" + a2;
-          }
-          return a2 + ";";
-        case 938:
-          if (45 === a2.charCodeAt(5))
-            switch (a2.charCodeAt(6)) {
-              case 105:
-                return b2 = a2.replace("-items", ""), "-webkit-" + a2 + "-webkit-box-" + b2 + "-ms-flex-" + b2 + a2;
-              case 115:
-                return "-webkit-" + a2 + "-ms-flex-item-" + a2.replace(ba, "") + a2;
-              default:
-                return "-webkit-" + a2 + "-ms-flex-line-pack" + a2.replace("align-content", "").replace(ba, "") + a2;
-            }
-          break;
-        case 973:
-        case 989:
-          if (45 !== a2.charCodeAt(3) || 122 === a2.charCodeAt(4))
-            break;
-        case 931:
-        case 953:
-          if (true === la.test(d2))
-            return 115 === (b2 = d2.substring(d2.indexOf(":") + 1)).charCodeAt(0) ? P(d2.replace("stretch", "fill-available"), c2, e2, h).replace(":fill-available", ":stretch") : a2.replace(b2, "-webkit-" + b2) + a2.replace(b2, "-moz-" + b2.replace("fill-", "")) + a2;
-          break;
-        case 962:
-          if (a2 = "-webkit-" + a2 + (102 === a2.charCodeAt(5) ? "-ms-" + a2 : "") + a2, 211 === e2 + h && 105 === a2.charCodeAt(13) && 0 < a2.indexOf("transform", 10))
-            return a2.substring(0, a2.indexOf(";", 27) + 1).replace(ma, "$1-webkit-$2") + a2;
-      }
-      return a2;
-    }
-    function L2(d2, c2) {
-      var e2 = d2.indexOf(1 === c2 ? ":" : "{"), h = d2.substring(0, 3 !== c2 ? e2 : 10);
-      e2 = d2.substring(e2 + 1, d2.length - 1);
-      return R2(2 !== c2 ? h : h.replace(na, "$1"), e2, c2);
-    }
-    function ea(d2, c2) {
-      var e2 = P(c2, c2.charCodeAt(0), c2.charCodeAt(1), c2.charCodeAt(2));
-      return e2 !== c2 + ";" ? e2.replace(oa, " or ($1)").substring(4) : "(" + c2 + ")";
-    }
-    function H2(d2, c2, e2, h, a2, m2, b2, v2, n2, q2) {
-      for (var g2 = 0, x2 = c2, w3; g2 < A; ++g2) {
-        switch (w3 = S2[g2].call(B2, d2, x2, e2, h, a2, m2, b2, v2, n2, q2)) {
-          case void 0:
-          case false:
-          case true:
-          case null:
-            break;
-          default:
-            x2 = w3;
-        }
-      }
-      if (x2 !== c2)
-        return x2;
-    }
-    function T2(d2) {
-      switch (d2) {
-        case void 0:
-        case null:
-          A = S2.length = 0;
-          break;
-        default:
-          if ("function" === typeof d2)
-            S2[A++] = d2;
-          else if ("object" === typeof d2)
-            for (var c2 = 0, e2 = d2.length; c2 < e2; ++c2) {
-              T2(d2[c2]);
-            }
-          else
-            Y2 = !!d2 | 0;
-      }
-      return T2;
-    }
-    function U2(d2) {
-      d2 = d2.prefix;
-      void 0 !== d2 && (R2 = null, d2 ? "function" !== typeof d2 ? w2 = 1 : (w2 = 2, R2 = d2) : w2 = 0);
-      return U2;
-    }
-    function B2(d2, c2) {
-      var e2 = d2;
-      33 > e2.charCodeAt(0) && (e2 = e2.trim());
-      V2 = e2;
-      e2 = [V2];
-      if (0 < A) {
-        var h = H2(-1, c2, e2, e2, D2, z2, 0, 0, 0, 0);
-        void 0 !== h && "string" === typeof h && (c2 = h);
-      }
-      var a2 = M2(O2, e2, c2, 0, 0);
-      0 < A && (h = H2(-2, a2, e2, e2, D2, z2, a2.length, 0, 0, 0), void 0 !== h && (a2 = h));
-      V2 = "";
-      E2 = 0;
-      z2 = D2 = 1;
-      return a2;
-    }
-    var ca = /^\0+/g, N2 = /[\0\r\f]/g, aa = /: */g, ka = /zoo|gra/, ma = /([,: ])(transform)/g, ia = /,\r+?/g, F2 = /([\t\r\n ])*\f?&/g, fa = /@(k\w+)\s*(\S*)\s*/, Q2 = /::(place)/g, ha = /:(read-only)/g, G2 = /[svh]\w+-[tblr]{2}/, da = /\(\s*(.*)\s*\)/g, oa = /([\s\S]*?);/g, ba = /-self|flex-/g, na = /[^]*?(:[rp][el]a[\w-]+)[^]*/, la = /stretch|:\s*\w+\-(?:conte|avail)/, ja = /([^-])(image-set\()/, z2 = 1, D2 = 1, E2 = 0, w2 = 1, O2 = [], S2 = [], A = 0, R2 = null, Y2 = 0, V2 = "";
-    B2.use = T2;
-    B2.set = U2;
-    void 0 !== W2 && U2(W2);
-    return B2;
-  }
-  var stylis_esm_default = stylis_min;
-
-  // node_modules/.pnpm/@emotion+unitless@0.7.5/node_modules/@emotion/unitless/dist/unitless.esm.js
-  var unitlessKeys = {
-    animationIterationCount: 1,
-    borderImageOutset: 1,
-    borderImageSlice: 1,
-    borderImageWidth: 1,
-    boxFlex: 1,
-    boxFlexGroup: 1,
-    boxOrdinalGroup: 1,
-    columnCount: 1,
-    columns: 1,
-    flex: 1,
-    flexGrow: 1,
-    flexPositive: 1,
-    flexShrink: 1,
-    flexNegative: 1,
-    flexOrder: 1,
-    gridRow: 1,
-    gridRowEnd: 1,
-    gridRowSpan: 1,
-    gridRowStart: 1,
-    gridColumn: 1,
-    gridColumnEnd: 1,
-    gridColumnSpan: 1,
-    gridColumnStart: 1,
-    msGridRow: 1,
-    msGridRowSpan: 1,
-    msGridColumn: 1,
-    msGridColumnSpan: 1,
-    fontWeight: 1,
-    lineHeight: 1,
-    opacity: 1,
-    order: 1,
-    orphans: 1,
-    tabSize: 1,
-    widows: 1,
-    zIndex: 1,
-    zoom: 1,
-    WebkitLineClamp: 1,
-    fillOpacity: 1,
-    floodOpacity: 1,
-    stopOpacity: 1,
-    strokeDasharray: 1,
-    strokeDashoffset: 1,
-    strokeMiterlimit: 1,
-    strokeOpacity: 1,
-    strokeWidth: 1
-  };
-  var unitless_esm_default = unitlessKeys;
-
-  // node_modules/.pnpm/@emotion+memoize@0.7.5/node_modules/@emotion/memoize/dist/emotion-memoize.esm.js
-  function memoize(fn) {
-    var cache = /* @__PURE__ */ Object.create(null);
-    return function(arg) {
-      if (cache[arg] === void 0)
-        cache[arg] = fn(arg);
-      return cache[arg];
-    };
-  }
-  var emotion_memoize_esm_default = memoize;
-
-  // node_modules/.pnpm/@emotion+is-prop-valid@1.1.3/node_modules/@emotion/is-prop-valid/dist/emotion-is-prop-valid.esm.js
-  var reactPropsRegex = /^((children|dangerouslySetInnerHTML|key|ref|autoFocus|defaultValue|defaultChecked|innerHTML|suppressContentEditableWarning|suppressHydrationWarning|valueLink|abbr|accept|acceptCharset|accessKey|action|allow|allowUserMedia|allowPaymentRequest|allowFullScreen|allowTransparency|alt|async|autoComplete|autoPlay|capture|cellPadding|cellSpacing|challenge|charSet|checked|cite|classID|className|cols|colSpan|content|contentEditable|contextMenu|controls|controlsList|coords|crossOrigin|data|dateTime|decoding|default|defer|dir|disabled|disablePictureInPicture|download|draggable|encType|enterKeyHint|form|formAction|formEncType|formMethod|formNoValidate|formTarget|frameBorder|headers|height|hidden|high|href|hrefLang|htmlFor|httpEquiv|id|inputMode|integrity|is|keyParams|keyType|kind|label|lang|list|loading|loop|low|marginHeight|marginWidth|max|maxLength|media|mediaGroup|method|min|minLength|multiple|muted|name|nonce|noValidate|open|optimum|pattern|placeholder|playsInline|poster|preload|profile|radioGroup|readOnly|referrerPolicy|rel|required|reversed|role|rows|rowSpan|sandbox|scope|scoped|scrolling|seamless|selected|shape|size|sizes|slot|span|spellCheck|src|srcDoc|srcLang|srcSet|start|step|style|summary|tabIndex|target|title|translate|type|useMap|value|width|wmode|wrap|about|datatype|inlist|prefix|property|resource|typeof|vocab|autoCapitalize|autoCorrect|autoSave|color|incremental|fallback|inert|itemProp|itemScope|itemType|itemID|itemRef|on|option|results|security|unselectable|accentHeight|accumulate|additive|alignmentBaseline|allowReorder|alphabetic|amplitude|arabicForm|ascent|attributeName|attributeType|autoReverse|azimuth|baseFrequency|baselineShift|baseProfile|bbox|begin|bias|by|calcMode|capHeight|clip|clipPathUnits|clipPath|clipRule|colorInterpolation|colorInterpolationFilters|colorProfile|colorRendering|contentScriptType|contentStyleType|cursor|cx|cy|d|decelerate|descent|diffuseConstant|direction|display|divisor|dominantBaseline|dur|dx|dy|edgeMode|elevation|enableBackground|end|exponent|externalResourcesRequired|fill|fillOpacity|fillRule|filter|filterRes|filterUnits|floodColor|floodOpacity|focusable|fontFamily|fontSize|fontSizeAdjust|fontStretch|fontStyle|fontVariant|fontWeight|format|from|fr|fx|fy|g1|g2|glyphName|glyphOrientationHorizontal|glyphOrientationVertical|glyphRef|gradientTransform|gradientUnits|hanging|horizAdvX|horizOriginX|ideographic|imageRendering|in|in2|intercept|k|k1|k2|k3|k4|kernelMatrix|kernelUnitLength|kerning|keyPoints|keySplines|keyTimes|lengthAdjust|letterSpacing|lightingColor|limitingConeAngle|local|markerEnd|markerMid|markerStart|markerHeight|markerUnits|markerWidth|mask|maskContentUnits|maskUnits|mathematical|mode|numOctaves|offset|opacity|operator|order|orient|orientation|origin|overflow|overlinePosition|overlineThickness|panose1|paintOrder|pathLength|patternContentUnits|patternTransform|patternUnits|pointerEvents|points|pointsAtX|pointsAtY|pointsAtZ|preserveAlpha|preserveAspectRatio|primitiveUnits|r|radius|refX|refY|renderingIntent|repeatCount|repeatDur|requiredExtensions|requiredFeatures|restart|result|rotate|rx|ry|scale|seed|shapeRendering|slope|spacing|specularConstant|specularExponent|speed|spreadMethod|startOffset|stdDeviation|stemh|stemv|stitchTiles|stopColor|stopOpacity|strikethroughPosition|strikethroughThickness|string|stroke|strokeDasharray|strokeDashoffset|strokeLinecap|strokeLinejoin|strokeMiterlimit|strokeOpacity|strokeWidth|surfaceScale|systemLanguage|tableValues|targetX|targetY|textAnchor|textDecoration|textRendering|textLength|to|transform|u1|u2|underlinePosition|underlineThickness|unicode|unicodeBidi|unicodeRange|unitsPerEm|vAlphabetic|vHanging|vIdeographic|vMathematical|values|vectorEffect|version|vertAdvY|vertOriginX|vertOriginY|viewBox|viewTarget|visibility|widths|wordSpacing|writingMode|x|xHeight|x1|x2|xChannelSelector|xlinkActuate|xlinkArcrole|xlinkHref|xlinkRole|xlinkShow|xlinkTitle|xlinkType|xmlBase|xmlns|xmlnsXlink|xmlLang|xmlSpace|y|y1|y2|yChannelSelector|z|zoomAndPan|for|class|autofocus)|(([Dd][Aa][Tt][Aa]|[Aa][Rr][Ii][Aa]|x)-.*))$/;
-  var isPropValid = /* @__PURE__ */ emotion_memoize_esm_default(
-    function(prop) {
-      return reactPropsRegex.test(prop) || prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110 && prop.charCodeAt(2) < 91;
-    }
-  );
-  var emotion_is_prop_valid_esm_default = isPropValid;
-
-  // node_modules/.pnpm/styled-components@5.3.5_react-dom@18.2.0_react-is@18.2.0_react@18.2.0/node_modules/styled-components/dist/styled-components.esm.js
-  var import_hoist_non_react_statics = __toESM(require_hoist_non_react_statics_cjs());
-  function y() {
-    return (y = Object.assign || function(e2) {
-      for (var t2 = 1; t2 < arguments.length; t2++) {
-        var n2 = arguments[t2];
-        for (var r2 in n2)
-          Object.prototype.hasOwnProperty.call(n2, r2) && (e2[r2] = n2[r2]);
-      }
-      return e2;
-    }).apply(this, arguments);
-  }
-  var v = function(e2, t2) {
-    for (var n2 = [e2[0]], r2 = 0, o2 = t2.length; r2 < o2; r2 += 1)
-      n2.push(t2[r2], e2[r2 + 1]);
-    return n2;
-  };
-  var g = function(t2) {
-    return null !== t2 && "object" == typeof t2 && "[object Object]" === (t2.toString ? t2.toString() : Object.prototype.toString.call(t2)) && !(0, import_react_is.typeOf)(t2);
-  };
-  var S = Object.freeze([]);
-  var w = Object.freeze({});
-  function E(e2) {
-    return "function" == typeof e2;
-  }
-  function b(e2) {
-    return "string" == typeof e2 && e2 || e2.displayName || e2.name || "Component";
-  }
-  function _(e2) {
-    return e2 && "string" == typeof e2.styledComponentId;
-  }
-  var N = "undefined" != typeof process && (process.env.REACT_APP_SC_ATTR || process.env.SC_ATTR) || "data-styled";
-  var C = "undefined" != typeof window && "HTMLElement" in window;
-  var I = Boolean("boolean" == typeof SC_DISABLE_SPEEDY ? SC_DISABLE_SPEEDY : "undefined" != typeof process && void 0 !== process.env.REACT_APP_SC_DISABLE_SPEEDY && "" !== process.env.REACT_APP_SC_DISABLE_SPEEDY ? "false" !== process.env.REACT_APP_SC_DISABLE_SPEEDY && process.env.REACT_APP_SC_DISABLE_SPEEDY : "undefined" != typeof process && void 0 !== process.env.SC_DISABLE_SPEEDY && "" !== process.env.SC_DISABLE_SPEEDY ? "false" !== process.env.SC_DISABLE_SPEEDY && process.env.SC_DISABLE_SPEEDY : true);
-  var O = true ? { 1: "Cannot create styled-component for component: %s.\n\n", 2: "Can't collect styles once you've consumed a `ServerStyleSheet`'s styles! `ServerStyleSheet` is a one off instance for each server-side render cycle.\n\n- Are you trying to reuse it across renders?\n- Are you accidentally calling collectStyles twice?\n\n", 3: "Streaming SSR is only supported in a Node.js environment; Please do not try to call this method in the browser.\n\n", 4: "The `StyleSheetManager` expects a valid target or sheet prop!\n\n- Does this error occur on the client and is your target falsy?\n- Does this error occur on the server and is the sheet falsy?\n\n", 5: "The clone method cannot be used on the client!\n\n- Are you running in a client-like environment on the server?\n- Are you trying to run SSR on the client?\n\n", 6: "Trying to insert a new style tag, but the given Node is unmounted!\n\n- Are you using a custom target that isn't mounted?\n- Does your document not have a valid head element?\n- Have you accidentally removed a style tag manually?\n\n", 7: 'ThemeProvider: Please return an object from your "theme" prop function, e.g.\n\n```js\ntheme={() => ({})}\n```\n\n', 8: 'ThemeProvider: Please make your "theme" prop an object.\n\n', 9: "Missing document `<head>`\n\n", 10: "Cannot find a StyleSheet instance. Usually this happens if there are multiple copies of styled-components loaded at once. Check out this issue for how to troubleshoot and fix the common cases where this situation can happen: https://github.com/styled-components/styled-components/issues/1941#issuecomment-417862021\n\n", 11: "_This error was replaced with a dev-time warning, it will be deleted for v4 final._ [createGlobalStyle] received children which will not be rendered. Please use the component without passing children elements.\n\n", 12: "It seems you are interpolating a keyframe declaration (%s) into an untagged string. This was supported in styled-components v3, but is not longer supported in v4 as keyframes are now injected on-demand. Please wrap your string in the css\\`\\` helper which ensures the styles are injected correctly. See https://www.styled-components.com/docs/api#css\n\n", 13: "%s is not a styled component and cannot be referred to via component selector. See https://www.styled-components.com/docs/advanced#referring-to-other-components for more details.\n\n", 14: 'ThemeProvider: "theme" prop is required.\n\n', 15: "A stylis plugin has been supplied that is not named. We need a name for each plugin to be able to prevent styling collisions between different stylis configurations within the same app. Before you pass your plugin to `<StyleSheetManager stylisPlugins={[]}>`, please make sure each plugin is uniquely-named, e.g.\n\n```js\nObject.defineProperty(importedPlugin, 'name', { value: 'some-unique-name' });\n```\n\n", 16: "Reached the limit of how many styled components may be created at group %s.\nYou may only create up to 1,073,741,824 components. If you're creating components dynamically,\nas for instance in your render method then you may be running into this limitation.\n\n", 17: "CSSStyleSheet could not be found on HTMLStyleElement.\nHas styled-components' style tag been unmounted or altered by another script?\n" } : {};
-  function R() {
-    for (var e2 = arguments.length <= 0 ? void 0 : arguments[0], t2 = [], n2 = 1, r2 = arguments.length; n2 < r2; n2 += 1)
-      t2.push(n2 < 0 || arguments.length <= n2 ? void 0 : arguments[n2]);
-    return t2.forEach(function(t3) {
-      e2 = e2.replace(/%[a-z]/, t3);
-    }), e2;
-  }
-  function D(e2) {
-    for (var t2 = arguments.length, n2 = new Array(t2 > 1 ? t2 - 1 : 0), r2 = 1; r2 < t2; r2++)
-      n2[r2 - 1] = arguments[r2];
-    throw false ? new Error("An error occurred. See https://git.io/JUIaE#" + e2 + " for more information." + (n2.length > 0 ? " Args: " + n2.join(", ") : "")) : new Error(R.apply(void 0, [O[e2]].concat(n2)).trim());
-  }
-  var j = function() {
-    function e2(e3) {
-      this.groupSizes = new Uint32Array(512), this.length = 512, this.tag = e3;
-    }
-    var t2 = e2.prototype;
-    return t2.indexOfGroup = function(e3) {
-      for (var t3 = 0, n2 = 0; n2 < e3; n2++)
-        t3 += this.groupSizes[n2];
-      return t3;
-    }, t2.insertRules = function(e3, t3) {
-      if (e3 >= this.groupSizes.length) {
-        for (var n2 = this.groupSizes, r2 = n2.length, o2 = r2; e3 >= o2; )
-          (o2 <<= 1) < 0 && D(16, "" + e3);
-        this.groupSizes = new Uint32Array(o2), this.groupSizes.set(n2), this.length = o2;
-        for (var s2 = r2; s2 < o2; s2++)
-          this.groupSizes[s2] = 0;
-      }
-      for (var i2 = this.indexOfGroup(e3 + 1), a2 = 0, c2 = t3.length; a2 < c2; a2++)
-        this.tag.insertRule(i2, t3[a2]) && (this.groupSizes[e3]++, i2++);
-    }, t2.clearGroup = function(e3) {
-      if (e3 < this.length) {
-        var t3 = this.groupSizes[e3], n2 = this.indexOfGroup(e3), r2 = n2 + t3;
-        this.groupSizes[e3] = 0;
-        for (var o2 = n2; o2 < r2; o2++)
-          this.tag.deleteRule(n2);
-      }
-    }, t2.getGroup = function(e3) {
-      var t3 = "";
-      if (e3 >= this.length || 0 === this.groupSizes[e3])
-        return t3;
-      for (var n2 = this.groupSizes[e3], r2 = this.indexOfGroup(e3), o2 = r2 + n2, s2 = r2; s2 < o2; s2++)
-        t3 += this.tag.getRule(s2) + "/*!sc*/\n";
-      return t3;
-    }, e2;
-  }();
-  var T = /* @__PURE__ */ new Map();
-  var x = /* @__PURE__ */ new Map();
-  var k = 1;
-  var V = function(e2) {
-    if (T.has(e2))
-      return T.get(e2);
-    for (; x.has(k); )
-      k++;
-    var t2 = k++;
-    return ((0 | t2) < 0 || t2 > 1 << 30) && D(16, "" + t2), T.set(e2, t2), x.set(t2, e2), t2;
-  };
-  var z = function(e2) {
-    return x.get(e2);
-  };
-  var B = function(e2, t2) {
-    t2 >= k && (k = t2 + 1), T.set(e2, t2), x.set(t2, e2);
-  };
-  var M = "style[" + N + '][data-styled-version="5.3.5"]';
-  var G = new RegExp("^" + N + '\\.g(\\d+)\\[id="([\\w\\d-]+)"\\].*?"([^"]*)');
-  var L = function(e2, t2, n2) {
-    for (var r2, o2 = n2.split(","), s2 = 0, i2 = o2.length; s2 < i2; s2++)
-      (r2 = o2[s2]) && e2.registerName(t2, r2);
-  };
-  var F = function(e2, t2) {
-    for (var n2 = (t2.textContent || "").split("/*!sc*/\n"), r2 = [], o2 = 0, s2 = n2.length; o2 < s2; o2++) {
-      var i2 = n2[o2].trim();
-      if (i2) {
-        var a2 = i2.match(G);
-        if (a2) {
-          var c2 = 0 | parseInt(a2[1], 10), u2 = a2[2];
-          0 !== c2 && (B(u2, c2), L(e2, u2, a2[3]), e2.getTag().insertRules(c2, r2)), r2.length = 0;
-        } else
-          r2.push(i2);
-      }
-    }
-  };
-  var Y = function() {
-    return "undefined" != typeof window && void 0 !== window.__webpack_nonce__ ? window.__webpack_nonce__ : null;
-  };
-  var q = function(e2) {
-    var t2 = document.head, n2 = e2 || t2, r2 = document.createElement("style"), o2 = function(e3) {
-      for (var t3 = e3.childNodes, n3 = t3.length; n3 >= 0; n3--) {
-        var r3 = t3[n3];
-        if (r3 && 1 === r3.nodeType && r3.hasAttribute(N))
-          return r3;
-      }
-    }(n2), s2 = void 0 !== o2 ? o2.nextSibling : null;
-    r2.setAttribute(N, "active"), r2.setAttribute("data-styled-version", "5.3.5");
-    var i2 = Y();
-    return i2 && r2.setAttribute("nonce", i2), n2.insertBefore(r2, s2), r2;
-  };
-  var H = function() {
-    function e2(e3) {
-      var t3 = this.element = q(e3);
-      t3.appendChild(document.createTextNode("")), this.sheet = function(e4) {
-        if (e4.sheet)
-          return e4.sheet;
-        for (var t4 = document.styleSheets, n2 = 0, r2 = t4.length; n2 < r2; n2++) {
-          var o2 = t4[n2];
-          if (o2.ownerNode === e4)
-            return o2;
-        }
-        D(17);
-      }(t3), this.length = 0;
-    }
-    var t2 = e2.prototype;
-    return t2.insertRule = function(e3, t3) {
-      try {
-        return this.sheet.insertRule(t3, e3), this.length++, true;
-      } catch (e4) {
-        return false;
-      }
-    }, t2.deleteRule = function(e3) {
-      this.sheet.deleteRule(e3), this.length--;
-    }, t2.getRule = function(e3) {
-      var t3 = this.sheet.cssRules[e3];
-      return void 0 !== t3 && "string" == typeof t3.cssText ? t3.cssText : "";
-    }, e2;
-  }();
-  var $ = function() {
-    function e2(e3) {
-      var t3 = this.element = q(e3);
-      this.nodes = t3.childNodes, this.length = 0;
-    }
-    var t2 = e2.prototype;
-    return t2.insertRule = function(e3, t3) {
-      if (e3 <= this.length && e3 >= 0) {
-        var n2 = document.createTextNode(t3), r2 = this.nodes[e3];
-        return this.element.insertBefore(n2, r2 || null), this.length++, true;
-      }
-      return false;
-    }, t2.deleteRule = function(e3) {
-      this.element.removeChild(this.nodes[e3]), this.length--;
-    }, t2.getRule = function(e3) {
-      return e3 < this.length ? this.nodes[e3].textContent : "";
-    }, e2;
-  }();
-  var W = function() {
-    function e2(e3) {
-      this.rules = [], this.length = 0;
-    }
-    var t2 = e2.prototype;
-    return t2.insertRule = function(e3, t3) {
-      return e3 <= this.length && (this.rules.splice(e3, 0, t3), this.length++, true);
-    }, t2.deleteRule = function(e3) {
-      this.rules.splice(e3, 1), this.length--;
-    }, t2.getRule = function(e3) {
-      return e3 < this.length ? this.rules[e3] : "";
-    }, e2;
-  }();
-  var U = C;
-  var J = { isServer: !C, useCSSOMInjection: !I };
-  var X = function() {
-    function e2(e3, t3, n2) {
-      void 0 === e3 && (e3 = w), void 0 === t3 && (t3 = {}), this.options = y({}, J, {}, e3), this.gs = t3, this.names = new Map(n2), this.server = !!e3.isServer, !this.server && C && U && (U = false, function(e4) {
-        for (var t4 = document.querySelectorAll(M), n3 = 0, r2 = t4.length; n3 < r2; n3++) {
-          var o2 = t4[n3];
-          o2 && "active" !== o2.getAttribute(N) && (F(e4, o2), o2.parentNode && o2.parentNode.removeChild(o2));
-        }
-      }(this));
-    }
-    e2.registerId = function(e3) {
-      return V(e3);
-    };
-    var t2 = e2.prototype;
-    return t2.reconstructWithOptions = function(t3, n2) {
-      return void 0 === n2 && (n2 = true), new e2(y({}, this.options, {}, t3), this.gs, n2 && this.names || void 0);
-    }, t2.allocateGSInstance = function(e3) {
-      return this.gs[e3] = (this.gs[e3] || 0) + 1;
-    }, t2.getTag = function() {
-      return this.tag || (this.tag = (n2 = (t3 = this.options).isServer, r2 = t3.useCSSOMInjection, o2 = t3.target, e3 = n2 ? new W(o2) : r2 ? new H(o2) : new $(o2), new j(e3)));
-      var e3, t3, n2, r2, o2;
-    }, t2.hasNameForId = function(e3, t3) {
-      return this.names.has(e3) && this.names.get(e3).has(t3);
-    }, t2.registerName = function(e3, t3) {
-      if (V(e3), this.names.has(e3))
-        this.names.get(e3).add(t3);
-      else {
-        var n2 = /* @__PURE__ */ new Set();
-        n2.add(t3), this.names.set(e3, n2);
-      }
-    }, t2.insertRules = function(e3, t3, n2) {
-      this.registerName(e3, t3), this.getTag().insertRules(V(e3), n2);
-    }, t2.clearNames = function(e3) {
-      this.names.has(e3) && this.names.get(e3).clear();
-    }, t2.clearRules = function(e3) {
-      this.getTag().clearGroup(V(e3)), this.clearNames(e3);
-    }, t2.clearTag = function() {
-      this.tag = void 0;
-    }, t2.toString = function() {
-      return function(e3) {
-        for (var t3 = e3.getTag(), n2 = t3.length, r2 = "", o2 = 0; o2 < n2; o2++) {
-          var s2 = z(o2);
-          if (void 0 !== s2) {
-            var i2 = e3.names.get(s2), a2 = t3.getGroup(o2);
-            if (i2 && a2 && i2.size) {
-              var c2 = N + ".g" + o2 + '[id="' + s2 + '"]', u2 = "";
-              void 0 !== i2 && i2.forEach(function(e4) {
-                e4.length > 0 && (u2 += e4 + ",");
-              }), r2 += "" + a2 + c2 + '{content:"' + u2 + '"}/*!sc*/\n';
-            }
-          }
-        }
-        return r2;
-      }(this);
-    }, e2;
-  }();
-  var Z = /(a)(d)/gi;
-  var K = function(e2) {
-    return String.fromCharCode(e2 + (e2 > 25 ? 39 : 97));
-  };
-  function Q(e2) {
-    var t2, n2 = "";
-    for (t2 = Math.abs(e2); t2 > 52; t2 = t2 / 52 | 0)
-      n2 = K(t2 % 52) + n2;
-    return (K(t2 % 52) + n2).replace(Z, "$1-$2");
-  }
-  var ee = function(e2, t2) {
-    for (var n2 = t2.length; n2; )
-      e2 = 33 * e2 ^ t2.charCodeAt(--n2);
-    return e2;
-  };
-  var te = function(e2) {
-    return ee(5381, e2);
-  };
-  function ne(e2) {
-    for (var t2 = 0; t2 < e2.length; t2 += 1) {
-      var n2 = e2[t2];
-      if (E(n2) && !_(n2))
-        return false;
-    }
-    return true;
-  }
-  var re = te("5.3.5");
-  var oe = function() {
-    function e2(e3, t2, n2) {
-      this.rules = e3, this.staticRulesId = "", this.isStatic = false, this.componentId = t2, this.baseHash = ee(re, t2), this.baseStyle = n2, X.registerId(t2);
-    }
-    return e2.prototype.generateAndInjectStyles = function(e3, t2, n2) {
-      var r2 = this.componentId, o2 = [];
-      if (this.baseStyle && o2.push(this.baseStyle.generateAndInjectStyles(e3, t2, n2)), this.isStatic && !n2.hash)
-        if (this.staticRulesId && t2.hasNameForId(r2, this.staticRulesId))
-          o2.push(this.staticRulesId);
-        else {
-          var s2 = _e(this.rules, e3, t2, n2).join(""), i2 = Q(ee(this.baseHash, s2) >>> 0);
-          if (!t2.hasNameForId(r2, i2)) {
-            var a2 = n2(s2, "." + i2, void 0, r2);
-            t2.insertRules(r2, i2, a2);
-          }
-          o2.push(i2), this.staticRulesId = i2;
-        }
-      else {
-        for (var c2 = this.rules.length, u2 = ee(this.baseHash, n2.hash), l2 = "", d2 = 0; d2 < c2; d2++) {
-          var h = this.rules[d2];
-          if ("string" == typeof h)
-            l2 += h, u2 = ee(u2, h + d2);
-          else if (h) {
-            var p = _e(h, e3, t2, n2), f = Array.isArray(p) ? p.join("") : p;
-            u2 = ee(u2, f + d2), l2 += f;
-          }
-        }
-        if (l2) {
-          var m2 = Q(u2 >>> 0);
-          if (!t2.hasNameForId(r2, m2)) {
-            var y2 = n2(l2, "." + m2, void 0, r2);
-            t2.insertRules(r2, m2, y2);
-          }
-          o2.push(m2);
-        }
-      }
-      return o2.join(" ");
-    }, e2;
-  }();
-  var se = /^\s*\/\/.*$/gm;
-  var ie = [":", "[", ".", "#"];
-  function ae(e2) {
-    var t2, n2, r2, o2, s2 = void 0 === e2 ? w : e2, i2 = s2.options, a2 = void 0 === i2 ? w : i2, c2 = s2.plugins, u2 = void 0 === c2 ? S : c2, l2 = new stylis_esm_default(a2), d2 = [], p = function(e3) {
-      function t3(t4) {
-        if (t4)
-          try {
-            e3(t4 + "}");
-          } catch (e4) {
-          }
-      }
-      return function(n3, r3, o3, s3, i3, a3, c3, u3, l3, d3) {
-        switch (n3) {
-          case 1:
-            if (0 === l3 && 64 === r3.charCodeAt(0))
-              return e3(r3 + ";"), "";
-            break;
-          case 2:
-            if (0 === u3)
-              return r3 + "/*|*/";
-            break;
-          case 3:
-            switch (u3) {
-              case 102:
-              case 112:
-                return e3(o3[0] + r3), "";
-              default:
-                return r3 + (0 === d3 ? "/*|*/" : "");
-            }
-          case -2:
-            r3.split("/*|*/}").forEach(t3);
-        }
-      };
-    }(function(e3) {
-      d2.push(e3);
-    }), f = function(e3, r3, s3) {
-      return 0 === r3 && -1 !== ie.indexOf(s3[n2.length]) || s3.match(o2) ? e3 : "." + t2;
-    };
-    function m2(e3, s3, i3, a3) {
-      void 0 === a3 && (a3 = "&");
-      var c3 = e3.replace(se, ""), u3 = s3 && i3 ? i3 + " " + s3 + " { " + c3 + " }" : c3;
-      return t2 = a3, n2 = s3, r2 = new RegExp("\\" + n2 + "\\b", "g"), o2 = new RegExp("(\\" + n2 + "\\b){2,}"), l2(i3 || !s3 ? "" : s3, u3);
-    }
-    return l2.use([].concat(u2, [function(e3, t3, o3) {
-      2 === e3 && o3.length && o3[0].lastIndexOf(n2) > 0 && (o3[0] = o3[0].replace(r2, f));
-    }, p, function(e3) {
-      if (-2 === e3) {
-        var t3 = d2;
-        return d2 = [], t3;
-      }
-    }])), m2.hash = u2.length ? u2.reduce(function(e3, t3) {
-      return t3.name || D(15), ee(e3, t3.name);
-    }, 5381).toString() : "", m2;
-  }
-  var ce = import_react.default.createContext();
-  var ue = ce.Consumer;
-  var le = import_react.default.createContext();
-  var de = (le.Consumer, new X());
-  var he = ae();
-  function pe() {
-    return (0, import_react.useContext)(ce) || de;
-  }
-  function fe() {
-    return (0, import_react.useContext)(le) || he;
-  }
-  function me(e2) {
-    var t2 = (0, import_react.useState)(e2.stylisPlugins), n2 = t2[0], s2 = t2[1], c2 = pe(), u2 = (0, import_react.useMemo)(function() {
-      var t3 = c2;
-      return e2.sheet ? t3 = e2.sheet : e2.target && (t3 = t3.reconstructWithOptions({ target: e2.target }, false)), e2.disableCSSOMInjection && (t3 = t3.reconstructWithOptions({ useCSSOMInjection: false })), t3;
-    }, [e2.disableCSSOMInjection, e2.sheet, e2.target]), l2 = (0, import_react.useMemo)(function() {
-      return ae({ options: { prefix: !e2.disableVendorPrefixes }, plugins: n2 });
-    }, [e2.disableVendorPrefixes, n2]);
-    return (0, import_react.useEffect)(function() {
-      (0, import_shallowequal.default)(n2, e2.stylisPlugins) || s2(e2.stylisPlugins);
-    }, [e2.stylisPlugins]), import_react.default.createElement(ce.Provider, { value: u2 }, import_react.default.createElement(le.Provider, { value: l2 }, true ? import_react.default.Children.only(e2.children) : e2.children));
-  }
-  var ye = function() {
-    function e2(e3, t2) {
-      var n2 = this;
-      this.inject = function(e4, t3) {
-        void 0 === t3 && (t3 = he);
-        var r2 = n2.name + t3.hash;
-        e4.hasNameForId(n2.id, r2) || e4.insertRules(n2.id, r2, t3(n2.rules, r2, "@keyframes"));
-      }, this.toString = function() {
-        return D(12, String(n2.name));
-      }, this.name = e3, this.id = "sc-keyframes-" + e3, this.rules = t2;
-    }
-    return e2.prototype.getName = function(e3) {
-      return void 0 === e3 && (e3 = he), this.name + e3.hash;
-    }, e2;
-  }();
-  var ve = /([A-Z])/;
-  var ge = /([A-Z])/g;
-  var Se = /^ms-/;
-  var we = function(e2) {
-    return "-" + e2.toLowerCase();
-  };
-  function Ee(e2) {
-    return ve.test(e2) ? e2.replace(ge, we).replace(Se, "-ms-") : e2;
-  }
-  var be = function(e2) {
-    return null == e2 || false === e2 || "" === e2;
-  };
-  function _e(e2, n2, r2, o2) {
-    if (Array.isArray(e2)) {
-      for (var s2, i2 = [], a2 = 0, c2 = e2.length; a2 < c2; a2 += 1)
-        "" !== (s2 = _e(e2[a2], n2, r2, o2)) && (Array.isArray(s2) ? i2.push.apply(i2, s2) : i2.push(s2));
-      return i2;
-    }
-    if (be(e2))
-      return "";
-    if (_(e2))
-      return "." + e2.styledComponentId;
-    if (E(e2)) {
-      if ("function" != typeof (l2 = e2) || l2.prototype && l2.prototype.isReactComponent || !n2)
-        return e2;
-      var u2 = e2(n2);
-      return (0, import_react_is.isElement)(u2) && console.warn(b(e2) + " is not a styled component and cannot be referred to via component selector. See https://www.styled-components.com/docs/advanced#referring-to-other-components for more details."), _e(u2, n2, r2, o2);
-    }
-    var l2;
-    return e2 instanceof ye ? r2 ? (e2.inject(r2, o2), e2.getName(o2)) : e2 : g(e2) ? function e3(t2, n3) {
-      var r3, o3, s3 = [];
-      for (var i3 in t2)
-        t2.hasOwnProperty(i3) && !be(t2[i3]) && (Array.isArray(t2[i3]) && t2[i3].isCss || E(t2[i3]) ? s3.push(Ee(i3) + ":", t2[i3], ";") : g(t2[i3]) ? s3.push.apply(s3, e3(t2[i3], i3)) : s3.push(Ee(i3) + ": " + (r3 = i3, null == (o3 = t2[i3]) || "boolean" == typeof o3 || "" === o3 ? "" : "number" != typeof o3 || 0 === o3 || r3 in unitless_esm_default ? String(o3).trim() : o3 + "px") + ";"));
-      return n3 ? [n3 + " {"].concat(s3, ["}"]) : s3;
-    }(e2) : e2.toString();
-  }
-  var Ne = function(e2) {
-    return Array.isArray(e2) && (e2.isCss = true), e2;
-  };
-  function Ae(e2) {
-    for (var t2 = arguments.length, n2 = new Array(t2 > 1 ? t2 - 1 : 0), r2 = 1; r2 < t2; r2++)
-      n2[r2 - 1] = arguments[r2];
-    return E(e2) || g(e2) ? Ne(_e(v(S, [e2].concat(n2)))) : 0 === n2.length && 1 === e2.length && "string" == typeof e2[0] ? e2 : Ne(_e(v(e2, n2)));
-  }
-  var Ce = /invalid hook call/i;
-  var Ie = /* @__PURE__ */ new Set();
-  var Pe = function(e2, t2) {
-    if (true) {
-      var n2 = "The component " + e2 + (t2 ? ' with the id of "' + t2 + '"' : "") + " has been created dynamically.\nYou may see this warning because you've called styled inside another component.\nTo resolve this only create new StyledComponents outside of any render method and function component.", r2 = console.error;
-      try {
-        var o2 = true;
-        console.error = function(e3) {
-          if (Ce.test(e3))
-            o2 = false, Ie.delete(n2);
-          else {
-            for (var t3 = arguments.length, s2 = new Array(t3 > 1 ? t3 - 1 : 0), i2 = 1; i2 < t3; i2++)
-              s2[i2 - 1] = arguments[i2];
-            r2.apply(void 0, [e3].concat(s2));
-          }
-        }, (0, import_react.useRef)(), o2 && !Ie.has(n2) && (console.warn(n2), Ie.add(n2));
-      } catch (e3) {
-        Ce.test(e3.message) && Ie.delete(n2);
-      } finally {
-        console.error = r2;
-      }
-    }
-  };
-  var Oe = function(e2, t2, n2) {
-    return void 0 === n2 && (n2 = w), e2.theme !== n2.theme && e2.theme || t2 || n2.theme;
-  };
-  var Re = /[!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~-]+/g;
-  var De = /(^-|-$)/g;
-  function je(e2) {
-    return e2.replace(Re, "-").replace(De, "");
-  }
-  var Te = function(e2) {
-    return Q(te(e2) >>> 0);
-  };
-  function xe(e2) {
-    return "string" == typeof e2 && e2.charAt(0) === e2.charAt(0).toLowerCase();
-  }
-  var ke = function(e2) {
-    return "function" == typeof e2 || "object" == typeof e2 && null !== e2 && !Array.isArray(e2);
-  };
-  var Ve = function(e2) {
-    return "__proto__" !== e2 && "constructor" !== e2 && "prototype" !== e2;
-  };
-  function ze(e2, t2, n2) {
-    var r2 = e2[n2];
-    ke(t2) && ke(r2) ? Be(r2, t2) : e2[n2] = t2;
-  }
-  function Be(e2) {
-    for (var t2 = arguments.length, n2 = new Array(t2 > 1 ? t2 - 1 : 0), r2 = 1; r2 < t2; r2++)
-      n2[r2 - 1] = arguments[r2];
-    for (var o2 = 0, s2 = n2; o2 < s2.length; o2++) {
-      var i2 = s2[o2];
-      if (ke(i2))
-        for (var a2 in i2)
-          Ve(a2) && ze(e2, i2[a2], a2);
-    }
-    return e2;
-  }
-  var Me = import_react.default.createContext();
-  var Ge = Me.Consumer;
-  var Fe = {};
-  function Ye(e2, t2, n2) {
-    var o2 = _(e2), i2 = !xe(e2), a2 = t2.attrs, c2 = void 0 === a2 ? S : a2, d2 = t2.componentId, h = void 0 === d2 ? function(e3, t3) {
-      var n3 = "string" != typeof e3 ? "sc" : je(e3);
-      Fe[n3] = (Fe[n3] || 0) + 1;
-      var r2 = n3 + "-" + Te("5.3.5" + n3 + Fe[n3]);
-      return t3 ? t3 + "-" + r2 : r2;
-    }(t2.displayName, t2.parentComponentId) : d2, p = t2.displayName, v2 = void 0 === p ? function(e3) {
-      return xe(e3) ? "styled." + e3 : "Styled(" + b(e3) + ")";
-    }(e2) : p, g2 = t2.displayName && t2.componentId ? je(t2.displayName) + "-" + t2.componentId : t2.componentId || h, N2 = o2 && e2.attrs ? Array.prototype.concat(e2.attrs, c2).filter(Boolean) : c2, A = t2.shouldForwardProp;
-    o2 && e2.shouldForwardProp && (A = t2.shouldForwardProp ? function(n3, r2, o3) {
-      return e2.shouldForwardProp(n3, r2, o3) && t2.shouldForwardProp(n3, r2, o3);
-    } : e2.shouldForwardProp);
-    var C2, I2 = new oe(n2, g2, o2 ? e2.componentStyle : void 0), P = I2.isStatic && 0 === c2.length, O2 = function(e3, t3) {
-      return function(e4, t4, n3, r2) {
-        var o3 = e4.attrs, i3 = e4.componentStyle, a3 = e4.defaultProps, c3 = e4.foldedComponentIds, d3 = e4.shouldForwardProp, h2 = e4.styledComponentId, p2 = e4.target;
-        (0, import_react.useDebugValue)(h2);
-        var m2 = function(e5, t5, n4) {
-          void 0 === e5 && (e5 = w);
-          var r3 = y({}, t5, { theme: e5 }), o4 = {};
-          return n4.forEach(function(e6) {
-            var t6, n5, s2, i4 = e6;
-            for (t6 in E(i4) && (i4 = i4(r3)), i4)
-              r3[t6] = o4[t6] = "className" === t6 ? (n5 = o4[t6], s2 = i4[t6], n5 && s2 ? n5 + " " + s2 : n5 || s2) : i4[t6];
-          }), [r3, o4];
-        }(Oe(t4, (0, import_react.useContext)(Me), a3) || w, t4, o3), v3 = m2[0], g3 = m2[1], S2 = function(e5, t5, n4, r3) {
-          var o4 = pe(), s2 = fe(), i4 = t5 ? e5.generateAndInjectStyles(w, o4, s2) : e5.generateAndInjectStyles(n4, o4, s2);
-          return (0, import_react.useDebugValue)(i4), !t5 && r3 && r3(i4), i4;
-        }(i3, r2, v3, true ? e4.warnTooManyClasses : void 0), b2 = n3, _2 = g3.$as || t4.$as || g3.as || t4.as || p2, N3 = xe(_2), A2 = g3 !== t4 ? y({}, t4, {}, g3) : t4, C3 = {};
-        for (var I3 in A2)
-          "$" !== I3[0] && "as" !== I3 && ("forwardedAs" === I3 ? C3.as = A2[I3] : (d3 ? d3(I3, emotion_is_prop_valid_esm_default, _2) : !N3 || emotion_is_prop_valid_esm_default(I3)) && (C3[I3] = A2[I3]));
-        return t4.style && g3.style !== t4.style && (C3.style = y({}, t4.style, {}, g3.style)), C3.className = Array.prototype.concat(c3, h2, S2 !== h2 ? S2 : null, t4.className, g3.className).filter(Boolean).join(" "), C3.ref = b2, (0, import_react.createElement)(_2, C3);
-      }(C2, e3, t3, P);
-    };
-    return O2.displayName = v2, (C2 = import_react.default.forwardRef(O2)).attrs = N2, C2.componentStyle = I2, C2.displayName = v2, C2.shouldForwardProp = A, C2.foldedComponentIds = o2 ? Array.prototype.concat(e2.foldedComponentIds, e2.styledComponentId) : S, C2.styledComponentId = g2, C2.target = o2 ? e2.target : e2, C2.withComponent = function(e3) {
-      var r2 = t2.componentId, o3 = function(e4, t3) {
-        if (null == e4)
-          return {};
-        var n3, r3, o4 = {}, s3 = Object.keys(e4);
-        for (r3 = 0; r3 < s3.length; r3++)
-          n3 = s3[r3], t3.indexOf(n3) >= 0 || (o4[n3] = e4[n3]);
-        return o4;
-      }(t2, ["componentId"]), s2 = r2 && r2 + "-" + (xe(e3) ? e3 : je(b(e3)));
-      return Ye(e3, y({}, o3, { attrs: N2, componentId: s2 }), n2);
-    }, Object.defineProperty(C2, "defaultProps", { get: function() {
-      return this._foldedDefaultProps;
-    }, set: function(t3) {
-      this._foldedDefaultProps = o2 ? Be({}, e2.defaultProps, t3) : t3;
-    } }), Pe(v2, g2), C2.warnTooManyClasses = function(e3, t3) {
-      var n3 = {}, r2 = false;
-      return function(o3) {
-        if (!r2 && (n3[o3] = true, Object.keys(n3).length >= 200)) {
-          var s2 = t3 ? ' with the id of "' + t3 + '"' : "";
-          console.warn("Over 200 classes were generated for component " + e3 + s2 + ".\nConsider using the attrs method, together with a style object for frequently changed styles.\nExample:\n  const Component = styled.div.attrs(props => ({\n    style: {\n      background: props.background,\n    },\n  }))`width: 100%;`\n\n  <Component />"), r2 = true, n3 = {};
-        }
-      };
-    }(v2, g2), C2.toString = function() {
-      return "." + C2.styledComponentId;
-    }, i2 && (0, import_hoist_non_react_statics.default)(C2, e2, { attrs: true, componentStyle: true, displayName: true, foldedComponentIds: true, shouldForwardProp: true, styledComponentId: true, target: true, withComponent: true }), C2;
-  }
-  var qe = function(e2) {
-    return function e3(t2, r2, o2) {
-      if (void 0 === o2 && (o2 = w), !(0, import_react_is.isValidElementType)(r2))
-        return D(1, String(r2));
-      var s2 = function() {
-        return t2(r2, o2, Ae.apply(void 0, arguments));
-      };
-      return s2.withConfig = function(n2) {
-        return e3(t2, r2, y({}, o2, {}, n2));
-      }, s2.attrs = function(n2) {
-        return e3(t2, r2, y({}, o2, { attrs: Array.prototype.concat(o2.attrs, n2).filter(Boolean) }));
-      }, s2;
-    }(Ye, e2);
-  };
-  ["a", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "big", "blockquote", "body", "br", "button", "canvas", "caption", "cite", "code", "col", "colgroup", "data", "datalist", "dd", "del", "details", "dfn", "dialog", "div", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "hr", "html", "i", "iframe", "img", "input", "ins", "kbd", "keygen", "label", "legend", "li", "link", "main", "map", "mark", "marquee", "menu", "menuitem", "meta", "meter", "nav", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "picture", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "script", "section", "select", "small", "source", "span", "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "time", "title", "tr", "track", "u", "ul", "var", "video", "wbr", "circle", "clipPath", "defs", "ellipse", "foreignObject", "g", "image", "line", "linearGradient", "marker", "mask", "path", "pattern", "polygon", "polyline", "radialGradient", "rect", "stop", "svg", "text", "textPath", "tspan"].forEach(function(e2) {
-    qe[e2] = qe(e2);
-  });
-  var He = function() {
-    function e2(e3, t3) {
-      this.rules = e3, this.componentId = t3, this.isStatic = ne(e3), X.registerId(this.componentId + 1);
-    }
-    var t2 = e2.prototype;
-    return t2.createStyles = function(e3, t3, n2, r2) {
-      var o2 = r2(_e(this.rules, t3, n2, r2).join(""), ""), s2 = this.componentId + e3;
-      n2.insertRules(s2, s2, o2);
-    }, t2.removeStyles = function(e3, t3) {
-      t3.clearRules(this.componentId + e3);
-    }, t2.renderStyles = function(e3, t3, n2, r2) {
-      e3 > 2 && X.registerId(this.componentId + e3), this.removeStyles(e3, n2), this.createStyles(e3, t3, n2, r2);
-    }, e2;
-  }();
-  var Ue = /^\s*<\/[a-z]/i;
-  var Je = function() {
-    function e2() {
-      var e3 = this;
-      this._emitSheetCSS = function() {
-        var t3 = e3.instance.toString();
-        if (!t3)
-          return "";
-        var n2 = Y();
-        return "<style " + [n2 && 'nonce="' + n2 + '"', N + '="true"', 'data-styled-version="5.3.5"'].filter(Boolean).join(" ") + ">" + t3 + "</style>";
-      }, this.getStyleTags = function() {
-        return e3.sealed ? D(2) : e3._emitSheetCSS();
-      }, this.getStyleElement = function() {
-        var t3;
-        if (e3.sealed)
-          return D(2);
-        var n2 = ((t3 = {})[N] = "", t3["data-styled-version"] = "5.3.5", t3.dangerouslySetInnerHTML = { __html: e3.instance.toString() }, t3), o2 = Y();
-        return o2 && (n2.nonce = o2), [import_react.default.createElement("style", y({}, n2, { key: "sc-0-0" }))];
-      }, this.seal = function() {
-        e3.sealed = true;
-      }, this.instance = new X({ isServer: true }), this.sealed = false;
-    }
-    var t2 = e2.prototype;
-    return t2.collectStyles = function(e3) {
-      return this.sealed ? D(2) : import_react.default.createElement(me, { sheet: this.instance }, e3);
-    }, t2.interleaveWithNodeStream = function(e3) {
-      if (C)
-        return D(3);
-      if (this.sealed)
-        return D(2);
-      this.seal();
-      var t3 = __require("stream"), n2 = (t3.Readable, t3.Transform), r2 = e3, o2 = this.instance, s2 = this._emitSheetCSS, i2 = new n2({ transform: function(e4, t4, n3) {
-        var r3 = e4.toString(), i3 = s2();
-        if (o2.clearTag(), Ue.test(r3)) {
-          var a2 = r3.indexOf(">") + 1, c2 = r3.slice(0, a2), u2 = r3.slice(a2);
-          this.push(c2 + i3 + u2);
-        } else
-          this.push(i3 + r3);
-        n3();
-      } });
-      return r2.on("error", function(e4) {
-        i2.emit("error", e4);
-      }), r2.pipe(i2);
-    }, e2;
-  }();
-  "undefined" != typeof navigator && "ReactNative" === navigator.product && console.warn("It looks like you've imported 'styled-components' on React Native.\nPerhaps you're looking to import 'styled-components/native'?\nRead more about this at https://www.styled-components.com/docs/basics#react-native"), "undefined" != typeof window && (window["__styled-components-init__"] = window["__styled-components-init__"] || 0, 1 === window["__styled-components-init__"] && console.warn("It looks like there are several instances of 'styled-components' initialized in this application. This may cause dynamic styles to not render properly, errors during the rehydration process, a missing theme prop, and makes your application bigger without good reason.\n\nSee https://s-c.sh/2BAXzed for more info."), window["__styled-components-init__"] += 1);
-  var styled_components_esm_default = qe;
-
   // src/views/App.tsx
-  var import_react4 = __toESM(require_react(), 1);
+  var import_react3 = __toESM(require_react(), 1);
 
   // node_modules/.pnpm/@ant-design+icons@4.7.0_react-dom@18.2.0_react@18.2.0/node_modules/@ant-design/icons/es/components/Context.js
-  var import_react2 = __toESM(require_react());
-  var IconContext = /* @__PURE__ */ (0, import_react2.createContext)({});
+  var import_react = __toESM(require_react());
+  var IconContext = /* @__PURE__ */ (0, import_react.createContext)({});
   var Context_default = IconContext;
 
   // node_modules/.pnpm/@babel+runtime@7.18.9/node_modules/@babel/runtime/helpers/esm/defineProperty.js
@@ -25606,9 +24525,9 @@
     return keys;
   }
   function _objectSpread2(target) {
-    for (var i2 = 1; i2 < arguments.length; i2++) {
-      var source = null != arguments[i2] ? arguments[i2] : {};
-      i2 % 2 ? ownKeys(Object(source), true).forEach(function(key) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = null != arguments[i] ? arguments[i] : {};
+      i % 2 ? ownKeys(Object(source), true).forEach(function(key) {
         _defineProperty(target, key, source[key]);
       }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function(key) {
         Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
@@ -25624,30 +24543,30 @@
   }
 
   // node_modules/.pnpm/@babel+runtime@7.18.9/node_modules/@babel/runtime/helpers/esm/iterableToArrayLimit.js
-  function _iterableToArrayLimit(arr, i2) {
+  function _iterableToArrayLimit(arr, i) {
     var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
     if (_i == null)
       return;
     var _arr = [];
     var _n = true;
     var _d = false;
-    var _s, _e2;
+    var _s, _e;
     try {
       for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
         _arr.push(_s.value);
-        if (i2 && _arr.length === i2)
+        if (i && _arr.length === i)
           break;
       }
     } catch (err) {
       _d = true;
-      _e2 = err;
+      _e = err;
     } finally {
       try {
         if (!_n && _i["return"] != null)
           _i["return"]();
       } finally {
         if (_d)
-          throw _e2;
+          throw _e;
       }
     }
     return _arr;
@@ -25657,25 +24576,25 @@
   function _arrayLikeToArray(arr, len) {
     if (len == null || len > arr.length)
       len = arr.length;
-    for (var i2 = 0, arr2 = new Array(len); i2 < len; i2++) {
-      arr2[i2] = arr[i2];
+    for (var i = 0, arr2 = new Array(len); i < len; i++) {
+      arr2[i] = arr[i];
     }
     return arr2;
   }
 
   // node_modules/.pnpm/@babel+runtime@7.18.9/node_modules/@babel/runtime/helpers/esm/unsupportedIterableToArray.js
-  function _unsupportedIterableToArray(o2, minLen) {
-    if (!o2)
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o)
       return;
-    if (typeof o2 === "string")
-      return _arrayLikeToArray(o2, minLen);
-    var n2 = Object.prototype.toString.call(o2).slice(8, -1);
-    if (n2 === "Object" && o2.constructor)
-      n2 = o2.constructor.name;
-    if (n2 === "Map" || n2 === "Set")
-      return Array.from(o2);
-    if (n2 === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n2))
-      return _arrayLikeToArray(o2, minLen);
+    if (typeof o === "string")
+      return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor)
+      n = o.constructor.name;
+    if (n === "Map" || n === "Set")
+      return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
+      return _arrayLikeToArray(o, minLen);
   }
 
   // node_modules/.pnpm/@babel+runtime@7.18.9/node_modules/@babel/runtime/helpers/esm/nonIterableRest.js
@@ -25684,8 +24603,8 @@
   }
 
   // node_modules/.pnpm/@babel+runtime@7.18.9/node_modules/@babel/runtime/helpers/esm/slicedToArray.js
-  function _slicedToArray(arr, i2) {
-    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i2) || _unsupportedIterableToArray(arr, i2) || _nonIterableRest();
+  function _slicedToArray(arr, i) {
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
   }
 
   // node_modules/.pnpm/@babel+runtime@7.18.9/node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
@@ -25694,9 +24613,9 @@
       return {};
     var target = {};
     var sourceKeys = Object.keys(source);
-    var key, i2;
-    for (i2 = 0; i2 < sourceKeys.length; i2++) {
-      key = sourceKeys[i2];
+    var key, i;
+    for (i = 0; i < sourceKeys.length; i++) {
+      key = sourceKeys[i];
       if (excluded.indexOf(key) >= 0)
         continue;
       target[key] = source[key];
@@ -25709,11 +24628,11 @@
     if (source == null)
       return {};
     var target = _objectWithoutPropertiesLoose(source, excluded);
-    var key, i2;
+    var key, i;
     if (Object.getOwnPropertySymbols) {
       var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-      for (i2 = 0; i2 < sourceSymbolKeys.length; i2++) {
-        key = sourceSymbolKeys[i2];
+      for (i = 0; i < sourceSymbolKeys.length; i++) {
+        key = sourceSymbolKeys[i];
         if (excluded.indexOf(key) >= 0)
           continue;
         if (!Object.prototype.propertyIsEnumerable.call(source, key))
@@ -25739,144 +24658,144 @@
   }
 
   // node_modules/.pnpm/@ctrl+tinycolor@3.4.1/node_modules/@ctrl/tinycolor/dist/module/util.js
-  function bound01(n2, max) {
-    if (isOnePointZero(n2)) {
-      n2 = "100%";
+  function bound01(n, max) {
+    if (isOnePointZero(n)) {
+      n = "100%";
     }
-    var isPercent = isPercentage(n2);
-    n2 = max === 360 ? n2 : Math.min(max, Math.max(0, parseFloat(n2)));
+    var isPercent = isPercentage(n);
+    n = max === 360 ? n : Math.min(max, Math.max(0, parseFloat(n)));
     if (isPercent) {
-      n2 = parseInt(String(n2 * max), 10) / 100;
+      n = parseInt(String(n * max), 10) / 100;
     }
-    if (Math.abs(n2 - max) < 1e-6) {
+    if (Math.abs(n - max) < 1e-6) {
       return 1;
     }
     if (max === 360) {
-      n2 = (n2 < 0 ? n2 % max + max : n2 % max) / parseFloat(String(max));
+      n = (n < 0 ? n % max + max : n % max) / parseFloat(String(max));
     } else {
-      n2 = n2 % max / parseFloat(String(max));
+      n = n % max / parseFloat(String(max));
     }
-    return n2;
+    return n;
   }
-  function isOnePointZero(n2) {
-    return typeof n2 === "string" && n2.indexOf(".") !== -1 && parseFloat(n2) === 1;
+  function isOnePointZero(n) {
+    return typeof n === "string" && n.indexOf(".") !== -1 && parseFloat(n) === 1;
   }
-  function isPercentage(n2) {
-    return typeof n2 === "string" && n2.indexOf("%") !== -1;
+  function isPercentage(n) {
+    return typeof n === "string" && n.indexOf("%") !== -1;
   }
-  function boundAlpha(a2) {
-    a2 = parseFloat(a2);
-    if (isNaN(a2) || a2 < 0 || a2 > 1) {
-      a2 = 1;
+  function boundAlpha(a) {
+    a = parseFloat(a);
+    if (isNaN(a) || a < 0 || a > 1) {
+      a = 1;
     }
-    return a2;
+    return a;
   }
-  function convertToPercentage(n2) {
-    if (n2 <= 1) {
-      return "".concat(Number(n2) * 100, "%");
+  function convertToPercentage(n) {
+    if (n <= 1) {
+      return "".concat(Number(n) * 100, "%");
     }
-    return n2;
+    return n;
   }
-  function pad2(c2) {
-    return c2.length === 1 ? "0" + c2 : String(c2);
+  function pad2(c) {
+    return c.length === 1 ? "0" + c : String(c);
   }
 
   // node_modules/.pnpm/@ctrl+tinycolor@3.4.1/node_modules/@ctrl/tinycolor/dist/module/conversion.js
-  function rgbToRgb(r2, g2, b2) {
+  function rgbToRgb(r, g, b) {
     return {
-      r: bound01(r2, 255) * 255,
-      g: bound01(g2, 255) * 255,
-      b: bound01(b2, 255) * 255
+      r: bound01(r, 255) * 255,
+      g: bound01(g, 255) * 255,
+      b: bound01(b, 255) * 255
     };
   }
-  function hue2rgb(p, q2, t2) {
-    if (t2 < 0) {
-      t2 += 1;
+  function hue2rgb(p, q, t) {
+    if (t < 0) {
+      t += 1;
     }
-    if (t2 > 1) {
-      t2 -= 1;
+    if (t > 1) {
+      t -= 1;
     }
-    if (t2 < 1 / 6) {
-      return p + (q2 - p) * (6 * t2);
+    if (t < 1 / 6) {
+      return p + (q - p) * (6 * t);
     }
-    if (t2 < 1 / 2) {
-      return q2;
+    if (t < 1 / 2) {
+      return q;
     }
-    if (t2 < 2 / 3) {
-      return p + (q2 - p) * (2 / 3 - t2) * 6;
+    if (t < 2 / 3) {
+      return p + (q - p) * (2 / 3 - t) * 6;
     }
     return p;
   }
-  function hslToRgb(h, s2, l2) {
-    var r2;
-    var g2;
-    var b2;
+  function hslToRgb(h, s, l) {
+    var r;
+    var g;
+    var b;
     h = bound01(h, 360);
-    s2 = bound01(s2, 100);
-    l2 = bound01(l2, 100);
-    if (s2 === 0) {
-      g2 = l2;
-      b2 = l2;
-      r2 = l2;
+    s = bound01(s, 100);
+    l = bound01(l, 100);
+    if (s === 0) {
+      g = l;
+      b = l;
+      r = l;
     } else {
-      var q2 = l2 < 0.5 ? l2 * (1 + s2) : l2 + s2 - l2 * s2;
-      var p = 2 * l2 - q2;
-      r2 = hue2rgb(p, q2, h + 1 / 3);
-      g2 = hue2rgb(p, q2, h);
-      b2 = hue2rgb(p, q2, h - 1 / 3);
+      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      var p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1 / 3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1 / 3);
     }
-    return { r: r2 * 255, g: g2 * 255, b: b2 * 255 };
+    return { r: r * 255, g: g * 255, b: b * 255 };
   }
-  function rgbToHsv(r2, g2, b2) {
-    r2 = bound01(r2, 255);
-    g2 = bound01(g2, 255);
-    b2 = bound01(b2, 255);
-    var max = Math.max(r2, g2, b2);
-    var min = Math.min(r2, g2, b2);
+  function rgbToHsv(r, g, b) {
+    r = bound01(r, 255);
+    g = bound01(g, 255);
+    b = bound01(b, 255);
+    var max = Math.max(r, g, b);
+    var min = Math.min(r, g, b);
     var h = 0;
-    var v2 = max;
-    var d2 = max - min;
-    var s2 = max === 0 ? 0 : d2 / max;
+    var v = max;
+    var d = max - min;
+    var s = max === 0 ? 0 : d / max;
     if (max === min) {
       h = 0;
     } else {
       switch (max) {
-        case r2:
-          h = (g2 - b2) / d2 + (g2 < b2 ? 6 : 0);
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
           break;
-        case g2:
-          h = (b2 - r2) / d2 + 2;
+        case g:
+          h = (b - r) / d + 2;
           break;
-        case b2:
-          h = (r2 - g2) / d2 + 4;
+        case b:
+          h = (r - g) / d + 4;
           break;
         default:
           break;
       }
       h /= 6;
     }
-    return { h, s: s2, v: v2 };
+    return { h, s, v };
   }
-  function hsvToRgb(h, s2, v2) {
+  function hsvToRgb(h, s, v) {
     h = bound01(h, 360) * 6;
-    s2 = bound01(s2, 100);
-    v2 = bound01(v2, 100);
-    var i2 = Math.floor(h);
-    var f = h - i2;
-    var p = v2 * (1 - s2);
-    var q2 = v2 * (1 - f * s2);
-    var t2 = v2 * (1 - (1 - f) * s2);
-    var mod = i2 % 6;
-    var r2 = [v2, q2, p, p, t2, v2][mod];
-    var g2 = [t2, v2, v2, q2, p, p][mod];
-    var b2 = [p, p, t2, v2, v2, q2][mod];
-    return { r: r2 * 255, g: g2 * 255, b: b2 * 255 };
+    s = bound01(s, 100);
+    v = bound01(v, 100);
+    var i = Math.floor(h);
+    var f = h - i;
+    var p = v * (1 - s);
+    var q = v * (1 - f * s);
+    var t = v * (1 - (1 - f) * s);
+    var mod = i % 6;
+    var r = [v, q, p, p, t, v][mod];
+    var g = [t, v, v, q, p, p][mod];
+    var b = [p, p, t, v, v, q][mod];
+    return { r: r * 255, g: g * 255, b: b * 255 };
   }
-  function rgbToHex(r2, g2, b2, allow3Char) {
+  function rgbToHex(r, g, b, allow3Char) {
     var hex = [
-      pad2(Math.round(r2).toString(16)),
-      pad2(Math.round(g2).toString(16)),
-      pad2(Math.round(b2).toString(16))
+      pad2(Math.round(r).toString(16)),
+      pad2(Math.round(g).toString(16)),
+      pad2(Math.round(b).toString(16))
     ];
     if (allow3Char && hex[0].startsWith(hex[0].charAt(1)) && hex[1].startsWith(hex[1].charAt(1)) && hex[2].startsWith(hex[2].charAt(1))) {
       return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0);
@@ -26045,10 +24964,10 @@
   // node_modules/.pnpm/@ctrl+tinycolor@3.4.1/node_modules/@ctrl/tinycolor/dist/module/format-input.js
   function inputToRGB(color) {
     var rgb = { r: 0, g: 0, b: 0 };
-    var a2 = 1;
-    var s2 = null;
-    var v2 = null;
-    var l2 = null;
+    var a = 1;
+    var s = null;
+    var v = null;
+    var l = null;
     var ok = false;
     var format = false;
     if (typeof color === "string") {
@@ -26060,30 +24979,30 @@
         ok = true;
         format = String(color.r).substr(-1) === "%" ? "prgb" : "rgb";
       } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
-        s2 = convertToPercentage(color.s);
-        v2 = convertToPercentage(color.v);
-        rgb = hsvToRgb(color.h, s2, v2);
+        s = convertToPercentage(color.s);
+        v = convertToPercentage(color.v);
+        rgb = hsvToRgb(color.h, s, v);
         ok = true;
         format = "hsv";
       } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
-        s2 = convertToPercentage(color.s);
-        l2 = convertToPercentage(color.l);
-        rgb = hslToRgb(color.h, s2, l2);
+        s = convertToPercentage(color.s);
+        l = convertToPercentage(color.l);
+        rgb = hslToRgb(color.h, s, l);
         ok = true;
         format = "hsl";
       }
       if (Object.prototype.hasOwnProperty.call(color, "a")) {
-        a2 = color.a;
+        a = color.a;
       }
     }
-    a2 = boundAlpha(a2);
+    a = boundAlpha(a);
     return {
       ok,
       format: color.format || format,
       r: Math.min(255, Math.max(rgb.r, 0)),
       g: Math.min(255, Math.max(rgb.g, 0)),
       b: Math.min(255, Math.max(rgb.b, 0)),
-      a: a2
+      a
     };
   }
   var CSS_INTEGER = "[-\\+]?\\d+%?";
@@ -26224,8 +25143,8 @@
     opacity: 0.98
   }];
   function toHsv(_ref) {
-    var r2 = _ref.r, g2 = _ref.g, b2 = _ref.b;
-    var hsv = rgbToHsv(r2, g2, b2);
+    var r = _ref.r, g = _ref.g, b = _ref.b;
+    var hsv = rgbToHsv(r, g, b);
     return {
       h: hsv.h * 360,
       s: hsv.s,
@@ -26233,8 +25152,8 @@
     };
   }
   function toHex(_ref2) {
-    var r2 = _ref2.r, g2 = _ref2.g, b2 = _ref2.b;
-    return "#".concat(rgbToHex(r2, g2, b2, false));
+    var r = _ref2.r, g = _ref2.g, b = _ref2.b;
+    return "#".concat(rgbToHex(r, g, b, false));
   }
   function mix(rgb1, rgb2, amount) {
     var p = amount / 100;
@@ -26245,12 +25164,12 @@
     };
     return rgb;
   }
-  function getHue(hsv, i2, light) {
+  function getHue(hsv, i, light) {
     var hue;
     if (Math.round(hsv.h) >= 60 && Math.round(hsv.h) <= 240) {
-      hue = light ? Math.round(hsv.h) - hueStep * i2 : Math.round(hsv.h) + hueStep * i2;
+      hue = light ? Math.round(hsv.h) - hueStep * i : Math.round(hsv.h) + hueStep * i;
     } else {
-      hue = light ? Math.round(hsv.h) + hueStep * i2 : Math.round(hsv.h) - hueStep * i2;
+      hue = light ? Math.round(hsv.h) + hueStep * i : Math.round(hsv.h) - hueStep * i;
     }
     if (hue < 0) {
       hue += 360;
@@ -26259,22 +25178,22 @@
     }
     return hue;
   }
-  function getSaturation(hsv, i2, light) {
+  function getSaturation(hsv, i, light) {
     if (hsv.h === 0 && hsv.s === 0) {
       return hsv.s;
     }
     var saturation;
     if (light) {
-      saturation = hsv.s - saturationStep * i2;
-    } else if (i2 === darkColorCount) {
+      saturation = hsv.s - saturationStep * i;
+    } else if (i === darkColorCount) {
       saturation = hsv.s + saturationStep;
     } else {
-      saturation = hsv.s + saturationStep2 * i2;
+      saturation = hsv.s + saturationStep2 * i;
     }
     if (saturation > 1) {
       saturation = 1;
     }
-    if (light && i2 === lightColorCount && saturation > 0.1) {
+    if (light && i === lightColorCount && saturation > 0.1) {
       saturation = 0.1;
     }
     if (saturation < 0.06) {
@@ -26282,12 +25201,12 @@
     }
     return Number(saturation.toFixed(2));
   }
-  function getValue(hsv, i2, light) {
+  function getValue(hsv, i, light) {
     var value;
     if (light) {
-      value = hsv.v + brightnessStep1 * i2;
+      value = hsv.v + brightnessStep1 * i;
     } else {
-      value = hsv.v - brightnessStep2 * i2;
+      value = hsv.v - brightnessStep2 * i;
     }
     if (value > 1) {
       value = 1;
@@ -26298,12 +25217,12 @@
     var opts = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
     var patterns = [];
     var pColor = inputToRGB(color);
-    for (var i2 = lightColorCount; i2 > 0; i2 -= 1) {
+    for (var i = lightColorCount; i > 0; i -= 1) {
       var hsv = toHsv(pColor);
       var colorString = toHex(inputToRGB({
-        h: getHue(hsv, i2, true),
-        s: getSaturation(hsv, i2, true),
-        v: getValue(hsv, i2, true)
+        h: getHue(hsv, i, true),
+        s: getSaturation(hsv, i, true),
+        v: getValue(hsv, i, true)
       }));
       patterns.push(colorString);
     }
@@ -26367,7 +25286,7 @@
   var grey = presetPalettes.grey;
 
   // node_modules/.pnpm/@ant-design+icons@4.7.0_react-dom@18.2.0_react@18.2.0/node_modules/@ant-design/icons/es/utils.js
-  var import_react3 = __toESM(require_react());
+  var import_react2 = __toESM(require_react());
 
   // node_modules/.pnpm/rc-util@5.23.0_react-dom@18.2.0_react@18.2.0/node_modules/rc-util/es/warning.js
   var warned = {};
@@ -26489,13 +25408,13 @@
   }
   function generate2(node, key, rootProps) {
     if (!rootProps) {
-      return /* @__PURE__ */ import_react3.default.createElement(node.tag, _objectSpread2({
+      return /* @__PURE__ */ import_react2.default.createElement(node.tag, _objectSpread2({
         key
       }, normalizeAttrs(node.attrs)), (node.children || []).map(function(child, index) {
         return generate2(child, "".concat(key, "-").concat(node.tag, "-").concat(index));
       }));
     }
-    return /* @__PURE__ */ import_react3.default.createElement(node.tag, _objectSpread2(_objectSpread2({
+    return /* @__PURE__ */ import_react2.default.createElement(node.tag, _objectSpread2(_objectSpread2({
       key
     }, normalizeAttrs(node.attrs)), rootProps), (node.children || []).map(function(child, index) {
       return generate2(child, "".concat(key, "-").concat(node.tag, "-").concat(index));
@@ -26513,8 +25432,8 @@
   var iconStyles = "\n.anticon {\n  display: inline-block;\n  color: inherit;\n  font-style: normal;\n  line-height: 0;\n  text-align: center;\n  text-transform: none;\n  vertical-align: -0.125em;\n  text-rendering: optimizeLegibility;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n\n.anticon > * {\n  line-height: 1;\n}\n\n.anticon svg {\n  display: inline-block;\n}\n\n.anticon::before {\n  display: none;\n}\n\n.anticon .anticon-icon {\n  display: block;\n}\n\n.anticon[tabindex] {\n  cursor: pointer;\n}\n\n.anticon-spin::before,\n.anticon-spin {\n  display: inline-block;\n  -webkit-animation: loadingCircle 1s infinite linear;\n  animation: loadingCircle 1s infinite linear;\n}\n\n@-webkit-keyframes loadingCircle {\n  100% {\n    -webkit-transform: rotate(360deg);\n    transform: rotate(360deg);\n  }\n}\n\n@keyframes loadingCircle {\n  100% {\n    -webkit-transform: rotate(360deg);\n    transform: rotate(360deg);\n  }\n}\n";
   var useInsertStyles = function useInsertStyles2() {
     var styleStr = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : iconStyles;
-    var _useContext = (0, import_react3.useContext)(Context_default), csp = _useContext.csp;
-    (0, import_react3.useEffect)(function() {
+    var _useContext = (0, import_react2.useContext)(Context_default), csp = _useContext.csp;
+    (0, import_react2.useEffect)(function() {
       updateCSS(styleStr, "@ant-design-icons", {
         prepend: true,
         csp
@@ -26646,32 +25565,25 @@
 
   // src/views/App.tsx
   var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
-  var Container = styled_components_esm_default.div`
-  width: 32px;
-  position: relative;
-`;
-  var Textarea = styled_components_esm_default.textarea`
-  position: absolute;
-  left: 36px;
-  width: 200px;
-  height: 70px;
-  max-width: 200px;
-`;
   var preFix = "bilibili-block-plus";
   var storageKey = `${preFix}-block-list`;
   var App = () => {
-    const [showInput, setShowInput] = (0, import_react4.useState)(false);
-    const [value, setValue] = (0, import_react4.useState)("");
-    (0, import_react4.useEffect)(() => {
+    const [showInput, setShowInput] = (0, import_react3.useState)(false);
+    const [value, setValue] = (0, import_react3.useState)("");
+    (0, import_react3.useEffect)(() => {
       const init = () => __async(void 0, null, function* () {
         const data = yield GM.getValue(storageKey);
         setValue(data);
       });
       init();
     }, []);
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Container, {
-      children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(StopOutlined_default2, {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: {
+      width: 32,
+      position: "relative"
+    }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        StopOutlined_default2,
+        {
           style: { fontSize: "32px", cursor: "pointer" },
           onClick: () => __async(void 0, null, function* () {
             if (showInput) {
@@ -26679,16 +25591,26 @@
             }
             setShowInput(!showInput);
           })
-        }),
-        showInput && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Textarea, {
+        }
+      ),
+      showInput && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        "textarea",
+        {
+          style: {
+            position: "absolute",
+            left: 36,
+            width: 200,
+            height: 70,
+            maxWidth: 200
+          },
           value,
-          onChange: (e2) => {
-            setValue(e2.target.value);
+          onChange: (e) => {
+            setValue(e.target.value);
           },
           placeholder: "\u8F93\u5165\u5C4F\u853D\u89C4\u5219\uFF0C\u6BCF\u884C\u4E00\u4E2A"
-        })
-      ]
-    });
+        }
+      )
+    ] });
   };
 
   // src/utils.ts
@@ -26869,7 +25791,7 @@
         document.body.append(container);
         document.body.append(style);
         const root = (0, import_client.createRoot)(container);
-        root.render((0, import_react5.createElement)(App));
+        root.render((0, import_react4.createElement)(App));
         return true;
       }
       return false;
@@ -26881,74 +25803,69 @@
     main();
   }
 })();
-/*!
-  Copyright (c) 2018 Jed Watson.
-  Licensed under the MIT License (MIT), see
-  http://jedwatson.github.io/classnames
+/*! Bundled license information:
+
+react/cjs/react.development.js:
+  (**
+   * @license React
+   * react.development.js
+   *
+   * Copyright (c) Facebook, Inc. and its affiliates.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE file in the root directory of this source tree.
+   *)
+
+scheduler/cjs/scheduler.development.js:
+  (**
+   * @license React
+   * scheduler.development.js
+   *
+   * Copyright (c) Facebook, Inc. and its affiliates.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE file in the root directory of this source tree.
+   *)
+
+react-dom/cjs/react-dom.development.js:
+  (**
+   * @license React
+   * react-dom.development.js
+   *
+   * Copyright (c) Facebook, Inc. and its affiliates.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE file in the root directory of this source tree.
+   *)
+  (**
+   * Checks if an event is supported in the current execution environment.
+   *
+   * NOTE: This will not work correctly for non-generic events such as `change`,
+   * `reset`, `load`, `error`, and `select`.
+   *
+   * Borrows from Modernizr.
+   *
+   * @param {string} eventNameSuffix Event name, e.g. "click".
+   * @return {boolean} True if the event is supported.
+   * @internal
+   * @license Modernizr 3.0.0pre (Custom Build) | MIT
+   *)
+
+classnames/index.js:
+  (*!
+    Copyright (c) 2018 Jed Watson.
+    Licensed under the MIT License (MIT), see
+    http://jedwatson.github.io/classnames
+  *)
+
+react/cjs/react-jsx-runtime.development.js:
+  (**
+   * @license React
+   * react-jsx-runtime.development.js
+   *
+   * Copyright (c) Facebook, Inc. and its affiliates.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE file in the root directory of this source tree.
+   *)
 */
-/**
- * @license React
- * react-dom.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-/**
- * @license React
- * react-is.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-/**
- * @license React
- * react-jsx-runtime.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-/**
- * @license React
- * react.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-/**
- * @license React
- * scheduler.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-/**
- * Checks if an event is supported in the current execution environment.
- *
- * NOTE: This will not work correctly for non-generic events such as `change`,
- * `reset`, `load`, `error`, and `select`.
- *
- * Borrows from Modernizr.
- *
- * @param {string} eventNameSuffix Event name, e.g. "click".
- * @return {boolean} True if the event is supported.
- * @internal
- * @license Modernizr 3.0.0pre (Custom Build) | MIT
- */
-/** @license React v16.13.1
- * react-is.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
