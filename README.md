@@ -19,7 +19,7 @@ b 站黑名单 plus 油猴脚本，可屏蔽指定用户作品、评论等
 
 使用油猴脚本需要首先安装 TamperMonkey 拓展，也就是俗称的[油猴拓展](https://www.tampermonkey.net/index.php)
 
-然后点击 [下载](https://greasyfork.org/zh-CN/scripts/448724-b-%E7%AB%99%E9%BB%91%E5%90%8D%E5%8D%95%E5%8A%A0%E5%BC%BA) 脚本
+然后点击 [下载](https://greasyfork.org/zh-CN/scripts/485844-b-%E7%AB%99%E9%BB%91%E5%90%8D%E5%8D%95%E5%8A%A0%E5%BC%BA) 脚本
 
 点一下这个图标
 
