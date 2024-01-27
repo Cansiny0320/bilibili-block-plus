@@ -6,8 +6,17 @@ const Container = styled.div`
   position: relative;
 `
 
+const Textarea = styled.textarea`
+  position: absolute;
+  left: 36px;
+  width: 200px;
+  height: 70px;
+  max-width: 200px;
+`
+
 const preFix = 'bilibili-block-plus'
 export const storageKey = `${preFix}-block-list`
+
 export const App: React.FC = () => {
   const [showInput, setShowInput] = useState(false)
   const [value, setValue] = useState('')
@@ -32,14 +41,7 @@ export const App: React.FC = () => {
         }}
       />
       {showInput && (
-        <textarea
-          style={{
-            position: 'absolute',
-            left: '36px',
-            width: '200px',
-            height: '70px',
-            maxWidth: '200px',
-          }}
+        <Textarea
           value={value}
           onChange={e => {
             setValue(e.target.value)
