@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         b 站黑名单加强
 // @description  可屏蔽指定用户作品、评论等
-// @version      0.3.8
+// @version      0.3.9
 // @namespace    https://github.com/Cansiny0320/bilibili-block-plus
 // @author       Cansiny0320 <Cansiny1220@gmail.com>
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=bilibili.com
