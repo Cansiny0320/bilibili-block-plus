@@ -1,7 +1,7 @@
 {
   "name": "bilibili-block-plus",
   "type": "module",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "private": true,
   "packageManager": "pnpm@8.14.0",
   "description": "",
