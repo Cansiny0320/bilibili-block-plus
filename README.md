@@ -35,6 +35,14 @@ b 站黑名单 plus 油猴脚本，可屏蔽指定用户作品、评论等
 
 修改后 npm run build 打包，npm run release 发布
 
+## 赞助
+
+如果这个项目对你有帮助，欢迎通过微信或支付宝支持后续开发。感谢你的支持！
+
+![微信与支付宝赞助二维码](.github/sponsorship/sponsorship-cats.png)
+
+[猫猫](.github/sponsorship/sponsorship-cats.png) · [一二布布](.github/sponsorship/sponsorship-yier-bubu.png) · [水豚噜噜](.github/sponsorship/sponsorship-lulu.png)
+
 ## License
 
 [MIT](./LICENSE) License © 2022 [Cansiny0320](https://github.com/Cansiny0320)
